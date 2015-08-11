@@ -1,0 +1,28 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd" 
+    version="1.0"> 
+    <persistence-unit name="NullPointer" transaction-type="RESOURCE_LOCAL"> 
+	    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> 
+	    <class>model.Bairro</class>
+	    <class>model.Cidade</class>
+	    <class>model.DadosContaUsuario</class>
+	    <class>model.Denuncia</class>
+	    <class>model.Estado</class>
+	    <class>model.ImagemDenuncia</class>
+	    <class>model.LocalDenuncia</class>
+	    <class>model.Mensagem</class>
+	    <class>model.Pais</class>
+	    <class>model.TipoDenuncia</class>
+	    <class>model.TipoUsuario</class>
+	    <class>model.Usuario</class>
+	    <class>model.ViewMapDenuncia</class>
+	    
+	    <properties> 
+	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> 
+	        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://rcisistemas.minivps.info:5432/NullPointer"/> 
+	        <property name="javax.persistence.jdbc.user" value="postgres"/> 
+	        <property name="javax.persistence.jdbc.password" value="n3turnos0l"/> 
+	   	</properties> 
+   	</persistence-unit> 
+</persistence>
