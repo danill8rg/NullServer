@@ -167,7 +167,7 @@ public class DenunciaResource extends SuperResource{
 			String observacao = dados_array_json.getString("observacao");
 			String imagem = dados_array_json.getString("imagem");
 			String formatoImage = dados_array_json.getString("formatoImage");
-			
+			String dataAconteceu = dados_array_json.getString("dataAconteceu");
 			if(latitude == null || longitude == null || tipoDenuncia == null || observacao.equalsIgnoreCase("") || latitude.equalsIgnoreCase("") || longitude.equalsIgnoreCase("")){
 				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
 			}
@@ -189,12 +189,15 @@ public class DenunciaResource extends SuperResource{
 			service = new DenunciaServiceImpl();
 			Denuncia denuncia = new Denuncia();
 			denuncia.setAtivo(true);
-			denuncia.setDataAconteceu(new Date());
+			if( dataAconteceu != null ){
+				denuncia.setDataAconteceu(new Date());
+			}else{
+				denuncia.setDataAconteceu(new Date());
+			}
 			denuncia.setLocalDenuncia(local);
 			denuncia.setTipoDenuncia(tipo);
 			denuncia.setObservacao(observacao);
 			denuncia.setUsuario(user);			
-			
 			denuncia = (Denuncia) service.gravar(denuncia);
 			
 			if(imagem != null){
@@ -237,23 +240,8 @@ public class DenunciaResource extends SuperResource{
 		for(ImagemDenuncia imgDenuncia : listImg){
 			auxJson = new JsonObject();
 			auxJson.addProperty("caminho", imgDenuncia.getCaminho());
-			
 			String encodedImage2 = null;
 	        String formatoImage = null;
-	        // imagem = new B
-	        //Codificar uma imagem
-	        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	        //imagem.compress(Bitmap.CompressFormat.PNG, 100, stream);
-	        //byte[] bitMapData = stream.toByteArray();
-	        //encodedImage2 = Base64.encodeToString(bitMapData, Base64.DEFAULT);
-	        //Uri uri = getImageUri(getApplicationContext(), imagem);
-	        // Em seguida chame este método para obter o caminho do arquivo
-	        //formatoImage = getRealPathFromURI(uri);
-	        //if(formatoImage.substring((formatoImage.length() -4), (formatoImage.length() -3)).equalsIgnoreCase(".")) {
-	        //	formatoImage = formatoImage.substring((formatoImage.length() -3), (formatoImage.length() ));
-	        //}else{
-	        //	formatoImage = formatoImage.substring((formatoImage.length() -4), (formatoImage.length() ));
-	        //}	
 			arrayImagem.add(auxJson);
 		}
 		for(Mensagem men: listMen){
@@ -262,7 +250,6 @@ public class DenunciaResource extends SuperResource{
 			auxJson.addProperty("usuario", men.getUsuario().getNome());
 			auxJson.addProperty("idusuario", men.getUsuario().getIdUsuario());
 			auxJson.addProperty("dataAdicionado", men.getDataAdicionado().toString());
-			
 			arrayMensagem.add(auxJson);
 		}
 		jsonDenuncia.add("listMensagem", arrayMensagem);
