@@ -18,11 +18,16 @@
 	    <class>model.Usuario</class>
 	    <class>model.ViewMapDenuncia</class>
 	    
-	    <properties> 
-	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> 
-	        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://rcisistemas.minivps.info:5432/NullPointer"/> 
-	        <property name="javax.persistence.jdbc.user" value="postgres"/> 
-	        <property name="javax.persistence.jdbc.password" value="n3turnos0l"/> 
-	   	</properties> 
+	   <properties>
+
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/NullPointer"/>
+			
+			<property name="javax.persistence.jdbc.user" value="postgres"/>
+			
+			<property name="javax.persistence.jdbc.password" value="postgres"/>
+
+		</properties>
    	</persistence-unit> 
 </persistence>
