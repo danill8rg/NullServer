@@ -201,7 +201,7 @@ public class DenunciaResource extends SuperResource{
 				String caminhoImagem = Utils.SalvarImagm(arquivo, formatoImage);
 				ImagemDenuncia imgDenuncia = new ImagemDenuncia();
 				imgDenuncia.setAtivo(true);
-				imgDenuncia.setCaminho(caminhoImagem);
+				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer2/ImagemDenuncia/" + caminhoImagem);
 				imgDenuncia.setDenuncia(denuncia);
 				imgDenuncia.setDescricao("...fazer posteriomente...");
 				service = new ImagemDenunciaServiceImpl();
