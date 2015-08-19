@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class TipoUsuario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="tipo_usuario_seq", sequenceName="tb_tipo_usuario_id_tipo_usuario_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="tipo_usuario_seq")
     @Basic(optional = false)
     @Column(name = "id_tipo_usuario")
     private Integer idTipoUsuario;

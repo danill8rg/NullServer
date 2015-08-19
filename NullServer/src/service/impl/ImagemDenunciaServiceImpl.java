@@ -18,7 +18,13 @@ public class ImagemDenunciaServiceImpl extends SuperServiceImpl<ImagemDenuncia, 
 		setDao(new ImagemDenunciaDaoImpl());
 		try{
 			object = getDao().gravar(object);
-			return object;
+			if(object != null ){
+				return object;
+			}else{
+				System.out.println("Erro ao gravar ImagemDenuncia");
+				System.out.println("Erro imagem Nao foi gravada....");
+				return new ImagemDenuncia();
+			}			
 		}catch(Exception e){
 			System.out.println("Erro ao gravar ImagemDenuncia");
 			System.out.println("Erro :" + e);

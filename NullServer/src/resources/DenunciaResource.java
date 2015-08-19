@@ -97,7 +97,6 @@ public class DenunciaResource extends SuperResource{
 		
 	}
 
-
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -114,43 +113,6 @@ public class DenunciaResource extends SuperResource{
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
 	}
-	
-//	@POST
-//	@Path("addUser")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@ValidateOnExecution
-//	public	Response addUsuario(String jsonRecebido)	{
-//		try{
-//			service = new UsuarioServiceImpl();
-//			//Converte String JSON para objeto Java
-//			JSONObject dados_array_json = new JSONObject(jsonRecebido);
-//			
-//			JSONObject dados_array = dados_array_json.getJSONObject("usuario");
-//			String nome = dados_array.getString("nome");
-//			String email = dados_array.getString("email");
-//			String senha = dados_array.getString("senha");
-//			
-//			UsuarioService userService = new  UsuarioServiceImpl();
-//			if(!userService.validarEmail(email)){
-//				return Response.serverError().entity("E-mail já existe!").build();
-//			}
-//			
-//			if(nome == null || email == null || senha == null || nome.equalsIgnoreCase("") || email.equalsIgnoreCase("") || senha.equalsIgnoreCase("")){
-//				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
-//			}
-//			Usuario user = new Usuario(nome,senha,email);
-//			//user.setIdUsuario(0);
-//			user = (Usuario) service.gravar(user);
-//			
-//			Gson gson = new Gson();
-//			String json = gson.toJson(user);
-//			return Response.ok(json, MediaType.APPLICATION_JSON).build();
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			 return Response.serverError().entity(e.getMessage()).build();
-//		}
-//	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -194,18 +156,26 @@ public class DenunciaResource extends SuperResource{
 			denuncia.setObservacao(observacao);
 			denuncia.setUsuario(user);			
 			denuncia = (Denuncia) service.gravar(denuncia);
-			
+			System.out.println("gravou denuncia...");
 			if(imagem != null){
 				byte[] arquivo = null;
 				arquivo = Base64.decodeBase64(imagem.toString());
 				String caminhoImagem = Utils.SalvarImagm(arquivo, formatoImage);
+				System.out.println("salvou imagem na pasta...");
 				ImagemDenuncia imgDenuncia = new ImagemDenuncia();
+				System.out.println("criou objeto");
 				imgDenuncia.setAtivo(true);
+				System.out.println("setou true");
 				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer2/ImagemDenuncia/" + caminhoImagem);
+				System.out.println("setou caminho = " + "http://rcisistemas.minivps.info:8080/NullPointer2/ImagemDenuncia/" + caminhoImagem );
 				imgDenuncia.setDenuncia(denuncia);
+				System.out.println("Setou Denuncia = " +  denuncia.getIdDenuncia() );
 				imgDenuncia.setDescricao("...fazer posteriomente...");
+				System.out.println("Setou descricao "  );
 				service = new ImagemDenunciaServiceImpl();
+				System.out.println("criou o service "  );
 				imgDenuncia = (ImagemDenuncia) service.gravar(imgDenuncia);
+				System.out.println("gravou imagem no banco... "  );
 			}
 			String json = gerarJson(denuncia);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
@@ -254,6 +224,7 @@ public class DenunciaResource extends SuperResource{
 		jsonDenuncia.addProperty("tipoDenuncia", denuncia.getTipoDenuncia().getDescricao());
 		jsonDenuncia.addProperty("usuarioDenuncia", denuncia.getUsuario().getNome());
 		jsonDenuncia.addProperty("idUsuarioDenuncia", denuncia.getUsuario().getIdUsuario());
+		jsonDenuncia.addProperty("idDenuncia", denuncia.getIdDenuncia());
 		return jsonDenuncia;
 	}
 

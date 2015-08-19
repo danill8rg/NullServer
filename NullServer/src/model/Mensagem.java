@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,7 +42,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Mensagem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="mensagem_seq", sequenceName="tb_mensagem_id_mensagem_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="mensagem_seq")
     @Basic(optional = false)
     @Column(name = "id_mensagem")
     private Integer idMensagem;
