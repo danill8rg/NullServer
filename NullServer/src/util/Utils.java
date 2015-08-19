@@ -15,8 +15,9 @@ public class Utils {
 		file = nome;
 		byte[] imgBytes = bytes;
 	    try {
-	    	file =  "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome + "." + formato;
-	    	FileOutputStream fos = new FileOutputStream(file);
+	    	file =  nome + "." + formato;
+	    	FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullPointer/WebContent/ImagemDenuncia/" + file);
+	        //FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer2/ImagemDenuncia/" + file);
 	        fos.write(imgBytes);
 	        FileDescriptor fd = fos.getFD();
 	        fos.flush();
