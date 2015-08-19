@@ -187,6 +187,7 @@ public class DenunciaResource extends SuperResource{
 			
 			service = new DenunciaServiceImpl();
 			Denuncia denuncia = new Denuncia();
+			denuncia.setDataAconteceu(new Date());
 			denuncia.setAtivo(true);
 			denuncia.setLocalDenuncia(local);
 			denuncia.setTipoDenuncia(tipo);
