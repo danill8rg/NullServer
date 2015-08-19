@@ -167,7 +167,6 @@ public class DenunciaResource extends SuperResource{
 			String observacao = dados_array_json.getString("observacao");
 			String imagem = dados_array_json.getString("imagem");
 			String formatoImage = dados_array_json.getString("formatoImage");
-			String dataAconteceu = dados_array_json.getString("dataAconteceu");
 			if(latitude == null || longitude == null || tipoDenuncia == null || observacao.equalsIgnoreCase("") || latitude.equalsIgnoreCase("") || longitude.equalsIgnoreCase("")){
 				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
 			}
@@ -189,11 +188,6 @@ public class DenunciaResource extends SuperResource{
 			service = new DenunciaServiceImpl();
 			Denuncia denuncia = new Denuncia();
 			denuncia.setAtivo(true);
-			if( dataAconteceu != null ){
-				denuncia.setDataAconteceu(new Date());
-			}else{
-				denuncia.setDataAconteceu(new Date());
-			}
 			denuncia.setLocalDenuncia(local);
 			denuncia.setTipoDenuncia(tipo);
 			denuncia.setObservacao(observacao);
