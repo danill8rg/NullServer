@@ -159,10 +159,15 @@ public class SuperDaoImpl<T, ID extends Serializable> implements SuperDao<T, ID>
             if (parameters != null && !parameters.isEmpty()) {
             	query = populateQueryParameters(query, parameters);
             }
- 
-            result = (T) query.getSingleResult();
-    
-            
+            List<T> lista = null;
+            lista = (List<T>) query.getResultList();
+            if(lista.isEmpty()){
+            	result = null;
+            }else{
+            	result = lista.get(0);
+            }
+//            result = (T) query.getSingleResult();
+
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
 			e.printStackTrace();

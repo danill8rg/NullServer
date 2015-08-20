@@ -18,7 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import service.UsuarioService;
+import service.impl.LocalDenunciaServiceImpl;
 import service.impl.UsuarioServiceImpl;
+import model.LocalDenuncia;
 import model.Usuario;
 
 import com.google.gson.Gson;
@@ -40,14 +42,15 @@ import com.google.gson.Gson;
 public class LocalDenunciaResource extends SuperResource{
 	
 	@GET
-	@Path("{id}")
-	public Response getUsuario(@PathParam("id") int id)	{
-		setService(new UsuarioServiceImpl());
+	@Path("{id}/{log}")
+	public Response getUsuario(@PathParam("id") String id, @PathParam("log") String log)	{
+		setService(new LocalDenunciaServiceImpl());
 		try{
-			Usuario user = (Usuario) getService().consultarObjetoId(id);
-			Gson gson = new Gson();
-			String json = gson.toJson(user);
-			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
+			LocalDenuncia local = new LocalDenuncia();
+			local.setLatitude(id);
+			local.setLongitude(log);
+			local = (LocalDenuncia) getService().gravar(local);
+			return Response.ok("ok").build();	
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}

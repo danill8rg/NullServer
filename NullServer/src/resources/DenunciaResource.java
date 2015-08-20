@@ -205,8 +205,8 @@ public class DenunciaResource extends SuperResource{
 		for(ImagemDenuncia imgDenuncia : listImg){
 			auxJson = new JsonObject();
 			auxJson.addProperty("caminho", imgDenuncia.getCaminho());
-			String encodedImage2 = null;
-	        String formatoImage = null;
+			String encodedImage = Utils.getImageBase64(imgDenuncia.getCaminho());
+	        auxJson.addProperty("imgBase64", encodedImage);
 			arrayImagem.add(auxJson);
 		}
 		for(Mensagem men: listMen){
@@ -228,4 +228,54 @@ public class DenunciaResource extends SuperResource{
 		return jsonDenuncia;
 	}
 
+	@POST
+	@Path("denuncia_rapida")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ValidateOnExecution
+	public	Response addDenunciaRapida(String jsonRecebido)	{
+		try{
+			//Converte String JSON para objeto Java
+			JSONObject dados_array_json = new JSONObject(jsonRecebido);
+	
+			String latitude = dados_array_json.getString("latitude");
+			String longitude = dados_array_json.getString("longitude");
+			String tipoDenuncia = dados_array_json.getString("tipoDenuncia");
+
+			if(latitude == null || longitude == null || tipoDenuncia == null || latitude.equalsIgnoreCase("") || longitude.equalsIgnoreCase("")){
+				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
+			}
+			
+			LocalDenuncia local = new LocalDenuncia(latitude, longitude);
+			service = new LocalDenunciaServiceImpl();
+			local = (LocalDenuncia) service.gravar(local);
+			
+			TipoDenunciaService serviceTipoDenucia = new TipoDenunciaServiceImpl();
+			TipoDenuncia tipo = serviceTipoDenucia.consultarDescricao(tipoDenuncia);
+			
+			if(tipo.getIdTipoDenuncia()  == null || tipo.getIdTipoDenuncia() == 0 ) {
+				tipo.setIdTipoDenuncia(1);
+			}
+			
+			service = new UsuarioServiceImpl();
+			Usuario user = (Usuario) service.consultarObjetoId(Integer.parseInt("1"));
+			
+			service = new DenunciaServiceImpl();
+			Denuncia denuncia = new Denuncia();
+			denuncia.setDataAconteceu(new Date());
+			denuncia.setAtivo(true);
+			denuncia.setLocalDenuncia(local);
+			denuncia.setTipoDenuncia(tipo);
+			denuncia.setObservacao("Denuncia Rapida.");
+			denuncia.setUsuario(user);			
+			denuncia = (Denuncia) service.gravar(denuncia);
+			System.out.println("gravou denuncia...");
+			
+			String json = gerarJson(denuncia);
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
 }

@@ -1,19 +1,12 @@
 package teste;
 
-import java.util.ArrayList;
-
-import model.TipoUsuario;
-import model.Usuario;
-import service.ImagemDenunciaService;
-import service.impl.ImagemDenunciaServiceImpl;
-import service.impl.UsuarioServiceImpl;
-
-import com.google.gson.Gson;
+import model.LocalDenuncia;
+import service.impl.LocalDenunciaServiceImpl;
 
 public class TesteGSON {
 
 	public static void main(String[] args) {
-//		System.out.println("testando...");
+		System.out.println("testando...");
 //		
 //		TipoUsuario tipo = new TipoUsuario(1, "Normal", true);
 //		Gson gson = new Gson();
@@ -40,11 +33,17 @@ public class TesteGSON {
 //		
 //		System.out.println("user_json = " + user_json);
 		
-	 String teste ="111 teste";
-	 System.out.println(teste);
-	 teste =teste.substring(0, teste.indexOf(" "));
-	 System.out.println("'"+teste+"'");
-			
+//	 String teste ="111 teste";
+//	 System.out.println(teste);
+//	 teste =teste.substring(0, teste.indexOf(" "));
+//	 System.out.println("'"+teste+"'");
+//		LocalDenunciaServiceImpl teste = new LocalDenunciaServiceImpl();
+//		
+//		LocalDenuncia local = new LocalDenuncia();
+//		local.setLatitude("-16.306306306306308");
+//		local.setLongitude("-48.94168176327416");
+//		
+//		teste.gravar(local);
 		
 	}
 
