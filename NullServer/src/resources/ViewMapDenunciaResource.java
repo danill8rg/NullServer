@@ -3,25 +3,22 @@ package resources;
 
 import java.util.ArrayList;
 
-import javax.validation.executable.ValidateOnExecution;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONObject;
+import model.ViewGraficoDenuncia;
+import model.ViewMapDenuncia;
+import service.ViewGraficoDenunciaService;
+import service.impl.ViewGraficoDenunciaServiceImpl;
+import service.impl.ViewMapDenunciaServiceImpl;
 
 import com.google.gson.Gson;
-
-import model.Usuario;
-import model.ViewMapDenuncia;
-import service.UsuarioService;
-import service.impl.UsuarioServiceImpl;
-import service.impl.ViewMapDenunciaServiceImpl;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -62,13 +59,42 @@ public class ViewMapDenunciaResource extends SuperResource{
 		service = new ViewMapDenunciaServiceImpl();
 		try{
 			ViewMapDenuncia view = new ViewMapDenuncia();
-			ArrayList<ViewMapDenuncia> list= service.consultarTodos(view);
+			ArrayList<ViewMapDenuncia> list = service.consultarTodos(view);
 			Gson gson = new Gson();
 			String json = gson.toJson(list);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
+	}
+	
+	@GET
+	@Path("quantidade")
+	public Response getQuantidade()	{
+		ViewGraficoDenunciaService serviceView = new ViewGraficoDenunciaServiceImpl();
+		try{
+			ViewGraficoDenuncia view = new ViewGraficoDenuncia();
+			ArrayList<ViewGraficoDenuncia> list = serviceView.consultarTodos(view);
+			JsonArray json = gerarJsonViewGraficoDenuncia(list);
+			System.out.println(json.toString());
+			return Response.ok(json.toString(), MediaType.APPLICATION_JSON).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+		
+	}
+
+
+	private JsonArray gerarJsonViewGraficoDenuncia(
+			ArrayList<ViewGraficoDenuncia> list) {
+		JsonArray jsonArray = new JsonArray();
+		for(ViewGraficoDenuncia view : list){
+			JsonObject json = new JsonObject();
+			json.addProperty("tipo", view.getTipoDenuncia());
+			json.addProperty("qtde", view.getQuantidade());
+			jsonArray.add(json);
+		}
+		return jsonArray;
 	}
 
 }

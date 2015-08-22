@@ -1,5 +1,7 @@
 package dao.impl;
 
+import java.util.HashMap;
+
 import dao.ViewMapDenunciaDao;
 import model.ViewMapDenuncia;
 
