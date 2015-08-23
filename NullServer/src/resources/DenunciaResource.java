@@ -60,7 +60,7 @@ public class DenunciaResource extends SuperResource{
 	
 	@GET
 	@Path("{id}")
-	public Response getUsuario(@PathParam("id") int id)	{
+	public Response getDenuncia(@PathParam("id") int id)	{
 		setService(new DenunciaServiceImpl());
 		try{
 			Denuncia denuncia = (Denuncia) getService().consultarObjetoId(id);
@@ -166,8 +166,8 @@ public class DenunciaResource extends SuperResource{
 				System.out.println("criou objeto");
 				imgDenuncia.setAtivo(true);
 				System.out.println("setou true");
-				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer2/ImagemDenuncia/" + caminhoImagem);
-				System.out.println("setou caminho = " + "http://rcisistemas.minivps.info:8080/NullPointer2/ImagemDenuncia/" + caminhoImagem );
+				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + caminhoImagem);
+				System.out.println("setou caminho = " + "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + caminhoImagem );
 				imgDenuncia.setDenuncia(denuncia);
 				System.out.println("Setou Denuncia = " +  denuncia.getIdDenuncia() );
 				imgDenuncia.setDescricao("...fazer posteriomente...");

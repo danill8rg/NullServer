@@ -26,7 +26,7 @@ public class Utils {
 	    try {
 	    	file =  nome + "." + formato;
 	    	//FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullPointer/WebContent/ImagemDenuncia/" + file);
-	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer2/ImagemDenuncia/" + file);
+	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + file);
 	        fos.write(imgBytes);
 	        FileDescriptor fd = fos.getFD();
 	        fos.flush();
