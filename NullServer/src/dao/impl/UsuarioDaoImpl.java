@@ -25,10 +25,15 @@ public class UsuarioDaoImpl extends SuperDaoImpl<Usuario, Integer> implements Us
 
 	@Override
 	public Usuario logar(String email, String Senha) {
+		try{
 		Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("email", email); 
         parameters.put("senha", Senha);  
-        return super.consultarObjeto("SELECT u FROM Usuario u WHERE u.email = :email and u.senha = :senha", parameters);
+        return  super.consultarObjeto("Usuario.logarEmail", parameters);
+		}catch (Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

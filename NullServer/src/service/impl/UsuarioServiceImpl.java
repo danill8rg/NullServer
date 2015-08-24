@@ -127,7 +127,11 @@ public class UsuarioServiceImpl extends SuperServiceImpl<Usuario, Integer> imple
 
 	@Override
 	public Usuario logar(Usuario usuario) throws Exception {
-		return usuario;
+		if(usuario.getEmail() == null || usuario.getSenha() == null){
+			return null;
+		}
+		UsuarioDao userDao = new UsuarioDaoImpl();
+		return userDao.logar(usuario.getEmail(), usuario.getSenha());
 	}
 
 	@Override

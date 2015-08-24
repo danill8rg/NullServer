@@ -22,6 +22,7 @@ import service.impl.UsuarioServiceImpl;
 import model.Usuario;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -98,13 +99,28 @@ public class UsuarioResource extends SuperResource{
 			service = new UsuarioServiceImpl();
 			//Converte String JSON para objeto Java
 			JSONObject dados_array_json = new JSONObject(jsonRecebido);
-			
+			String nome = null; String email = null; String senha = null;
 			JSONObject dados_array = dados_array_json.getJSONObject("usuario");
-			String nome = dados_array.getString("nome");
-			String email = dados_array.getString("email");
-			String senha = dados_array.getString("senha");
-			
+			if( ! dados_array.isNull("nome")){
+				nome = dados_array.getString("nome");
+			}
+			if( ! dados_array.isNull("email")){
+				email = dados_array.getString("email");
+			}
+			if( ! dados_array.isNull("senha")){
+				senha = dados_array.getString("senha");
+			}
+						
 			UsuarioService userService = new  UsuarioServiceImpl();
+			
+			Usuario user_Aux = new Usuario(nome,senha,email);			
+			user_Aux = userService.logar(user_Aux);
+			
+			if(user_Aux != null){
+				String json = gerarJsonUsuario(user_Aux);
+				return Response.ok(json, MediaType.APPLICATION_JSON).build();
+			}
+			
 			if(!userService.validarEmail(email)){
 				return Response.serverError().entity("E-mail já existe!").build();
 			}
@@ -114,10 +130,8 @@ public class UsuarioResource extends SuperResource{
 			}
 			Usuario user = new Usuario(nome,senha,email);
 			//user.setIdUsuario(0);
-			user = (Usuario) service.gravar(user);
-			
-			Gson gson = new Gson();
-			String json = gson.toJson(user);
+			user = (Usuario) userService.gravar(user);
+			String json = gerarJsonUsuario(user);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -125,7 +139,45 @@ public class UsuarioResource extends SuperResource{
 		}
 	}
 
+	private String gerarJsonUsuario(Usuario user) {
+		JsonObject json  = new JsonObject();
+		json.addProperty("idUsuario", user.getIdUsuario());
+		json.addProperty("nome", user.getNome());
+		json.addProperty("email", user.getEmail());
+		return json.toString();
+	}
 	
-
+	@POST
+	@Path("logar")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ValidateOnExecution
+	public	Response logar(String jsonRecebido)	{
+		try{
+			JSONObject dados_array_json = new JSONObject(jsonRecebido);
+			String email = null; String senha = null;
+			JSONObject dados_array = dados_array_json.getJSONObject("usuario");
+			if( ! dados_array.isNull("email")){
+				email = dados_array.getString("email");
+			}
+			if( ! dados_array.isNull("senha")){
+				senha = dados_array.getString("senha");
+			}
+						
+			UsuarioService userService = new  UsuarioServiceImpl();
+			
+			Usuario user_Aux = new Usuario("",senha,email);			
+			user_Aux = userService.logar(user_Aux);
+			
+			if(user_Aux != null){
+				String json = gerarJsonUsuario(user_Aux);
+				return Response.ok(json, MediaType.APPLICATION_JSON).build();
+			}
+			return Response.ok("", MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			return Response.ok("", MediaType.APPLICATION_JSON).build();
+		}
+	}
 
 }
