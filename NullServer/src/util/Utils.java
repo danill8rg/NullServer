@@ -8,10 +8,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
 
-import javassist.bytecode.ByteArray;
 import service.ImagemDenunciaService;
 import service.impl.ImagemDenunciaServiceImpl;
 
@@ -57,6 +55,25 @@ public class Utils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public static String SalvarImagemTemp(byte[] arquivo, String nome) {
+		byte[] imgBytes = arquivo;
+	    try {
+	    	FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome);
+	        //FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + file);
+	        fos.write(imgBytes);
+	        FileDescriptor fd = fos.getFD();
+	        fos.flush();
+	        fd.sync();
+	        fos.close();
+	        //return "http://localhost:8080/NullServer/image/temp/"+ nome;
+	        return "http://rcisistemas.minivps.info:8080/NullServer/image/temp/" + nome;
+	        } catch (Exception e) {
+	           System.out.println("Erro ao converter os bytes recebidos para imagem");
+	           e.getStackTrace();
+	        }
 		return null;
 	}
 

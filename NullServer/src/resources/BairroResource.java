@@ -3,8 +3,6 @@ package resources;
 
 import java.util.ArrayList;
 
-import javax.validation.Valid;
-import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,14 +12,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONArray;
+import model.Usuario;
+
 import org.json.JSONObject;
 
 import service.UsuarioService;
 import service.impl.UsuarioServiceImpl;
-import model.Usuario;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -60,8 +59,8 @@ public class BairroResource extends SuperResource{
 		UsuarioService userService = new  UsuarioServiceImpl();
 		try{
 			boolean result = userService.validarEmail(email);
-			JSONObject json = new JSONObject();
-			json.put("resultado", result);
+			JsonObject json = new JsonObject();
+			json.addProperty("resultado", result);
 			System.out.println(json.toString());
 			return Response.ok(json.toString()).build();	
 		}catch(Exception e){
@@ -92,7 +91,6 @@ public class BairroResource extends SuperResource{
 	@Path("addUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateOnExecution
 	public	Response addUsuario(String jsonRecebido)	{
 		try{
 			service = new UsuarioServiceImpl();

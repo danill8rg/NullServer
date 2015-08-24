@@ -1,12 +1,10 @@
 package resources;
 
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,20 +14,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.codec.binary.Base64;
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.sun.jna.platform.win32.WinGDI.BITMAPINFO;
-
 import model.Denuncia;
 import model.ImagemDenuncia;
 import model.LocalDenuncia;
 import model.Mensagem;
 import model.TipoDenuncia;
 import model.Usuario;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONObject;
+
 import service.ImagemDenunciaService;
 import service.MensagemService;
 import service.TipoDenunciaService;
@@ -41,6 +35,10 @@ import service.impl.MensagemServiceImpl;
 import service.impl.TipoDenunciaServiceImpl;
 import service.impl.UsuarioServiceImpl;
 import util.Utils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -117,7 +115,6 @@ public class DenunciaResource extends SuperResource{
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateOnExecution
 	public	Response addDenuncia(String jsonRecebido)	{
 		try{
 			//Converte String JSON para objeto Java
@@ -232,7 +229,6 @@ public class DenunciaResource extends SuperResource{
 	@Path("denuncia_rapida")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateOnExecution
 	public	Response addDenunciaRapida(String jsonRecebido)	{
 		try{
 			//Converte String JSON para objeto Java

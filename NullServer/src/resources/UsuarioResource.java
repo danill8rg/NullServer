@@ -3,8 +3,6 @@ package resources;
 
 import java.util.ArrayList;
 
-import javax.validation.Valid;
-import javax.validation.executable.ValidateOnExecution;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,12 +12,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONArray;
+import model.Usuario;
+
 import org.json.JSONObject;
 
 import service.UsuarioService;
 import service.impl.UsuarioServiceImpl;
-import model.Usuario;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -93,7 +91,6 @@ public class UsuarioResource extends SuperResource{
 	@Path("addUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateOnExecution
 	public	Response addUsuario(String jsonRecebido)	{
 		try{
 			service = new UsuarioServiceImpl();
@@ -151,7 +148,6 @@ public class UsuarioResource extends SuperResource{
 	@Path("logar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateOnExecution
 	public	Response logar(String jsonRecebido)	{
 		try{
 			JSONObject dados_array_json = new JSONObject(jsonRecebido);

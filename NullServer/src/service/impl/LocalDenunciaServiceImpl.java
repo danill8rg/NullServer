@@ -6,17 +6,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import model.Bairro;
 import model.Cidade;
 import model.Estado;
 import model.LocalDenuncia;
 import model.Pais;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import service.LocalDenunciaService;
 import dao.BairroDao;
 import dao.CidadeDao;
