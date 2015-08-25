@@ -66,63 +66,33 @@ public Response getUsuario(@PathParam("id") int id) {
 @POST
 @Path("/fileupload")
 @Consumes("*/*")
-public Response uploadFile(File image) throws IOException
-{
-    //Get API input data
-    //Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-     
-    //Get file name
-    //String fileName = uploadForm.get("fileName").get(0).getBodyAsString();
+@Produces(MediaType.APPLICATION_JSON)
+public Response uploadFile(File image) throws IOException {
 	String fileNameAux = image.getName() + ".jpg";
-	
-    //Get file data to save
-    //List<InputPart> inputParts = uploadForm.get("attachment");
+	String file_path;
+	try {
+		FileInputStream fis = new FileInputStream(image.getAbsolutePath());
+		InputStream is = fis;
 
-    //for (InputPart inputPart : inputParts){
-        try
-        {
-            //Use this header for extra processing if required
-//            @SuppressWarnings("unused")
-//            MultivaluedMap<String, String> header = inputPart.getHeaders();
-//             
-            // convert the uploaded file to inputstream
-            //InputStream inputStream = inputPart.getBody(InputStream.class, null);
-        	
-//        	BufferedImage bi = new BufferedImage(image.getWidth(null),image.getHeight(null),BufferedImage.TYPE_INT_RGB);    
-//        	Graphics bg = bi.getGraphics();  
-//        	bg.drawImage(image, 0, 0, null);    
-//        	bg.dispose();   
-//        	  
-//        	ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-//        	ImageIO.write(bi, "jpg", baos );  
-//        	baos.flush();  
-        	  
-//        	byte[] imageInByte = baos.toByteArray();  
-//       	baos.close();  
-        	
-//        	byte[] imageInByte = image.
-//        	  
-        	FileInputStream fis = new FileInputStream(image.getAbsolutePath());
-        	InputStream is = fis;
-
-        	InputStream inputStream = is;
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            // constructs upload file path
-            fileNameAux = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/" + fileNameAux;
-            writeFile(bytes, fileNameAux);
-            System.out.println("Success !!!!!");
-        	fis.close();  
-        	
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    //}
-    return Response.status(200)
-            .entity("Uploaded file name : "+ fileNameAux).build();
+		InputStream inputStream = is;
+		byte[] bytes = IOUtils.toByteArray(inputStream);
+		// constructs upload file path
+		file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/"
+				+ fileNameAux;
+		writeFile(bytes, file_path);
+		System.out.println("Success !!!!!");
+		fis.close();
+		JsonObject json = new  JsonObject();
+		json.addProperty("caminho", "http://localhost:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
+		//json.addProperty("caminho", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
+		//json.addProperty("caminho", "http://localhost:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
+		System.out.println(json.toString());
+		return Response.ok(json.toString()).build();	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return Response.status(200).entity("").build();
 }
-
 
 //Utility method
 private void writeFile(byte[] content, String filename) throws IOException
