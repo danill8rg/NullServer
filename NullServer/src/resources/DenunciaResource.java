@@ -22,6 +22,7 @@ import model.TipoDenuncia;
 import model.Usuario;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import service.ImagemDenunciaService;
@@ -267,6 +268,93 @@ public class DenunciaResource extends SuperResource{
 			denuncia = (Denuncia) service.gravar(denuncia);
 			System.out.println("gravou denuncia...");
 			
+			String json = gerarJson(denuncia);
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+	
+	@POST
+	@Path("denuncia_site")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public	Response addDenunciaSite(String jsonRecebido)	{
+		try{
+			//Converte String JSON para objeto Java
+			JSONObject dados_array_json = new JSONObject(jsonRecebido);
+			JSONObject json_dado = dados_array_json.getJSONObject("denuncia");
+			String latitude = null;
+			String longitude = null;
+			String tipoDenuncia = null;
+			String observacao = null;
+			JSONArray arrayImagem = null;
+			String dataAdicionada_string = null;
+			int idUsuario = 0;	
+			if( ! json_dado.isNull("latitude")){
+				latitude = String.valueOf(json_dado.getDouble("latitude"));
+			}
+			if( ! json_dado.isNull("longitude")){
+				longitude = String.valueOf(json_dado.getDouble("longitude"));
+			}
+			if( ! json_dado.isNull("tipoDenuncia")){
+				tipoDenuncia = json_dado.getString("tipoDenuncia");
+			}
+			if( ! json_dado.isNull("observacao")){
+				observacao = json_dado.getString("observacao");
+			}
+			if( ! json_dado.isNull("dataAdicionada")){
+				dataAdicionada_string = json_dado.getString("dataAdicionada");
+			}
+			if( ! json_dado.isNull("arrayImagemm")){
+				arrayImagem = json_dado.getJSONArray("arrayImagemm");
+			}
+			if( ! json_dado.isNull("idUsuario")){
+				idUsuario = json_dado.getInt("idUsuario");
+			}
+			
+			if(latitude == null || longitude == null || tipoDenuncia == null || latitude.equalsIgnoreCase("") 
+					|| longitude.equalsIgnoreCase("") || idUsuario == 0 ){
+				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
+			}
+			
+			LocalDenuncia local = new LocalDenuncia(latitude, longitude);
+			service = new LocalDenunciaServiceImpl();
+			local = (LocalDenuncia) service.gravar(local);
+			
+			TipoDenunciaService serviceTipoDenucia = new TipoDenunciaServiceImpl();
+			TipoDenuncia tipo = serviceTipoDenucia.consultarDescricao(tipoDenuncia);
+			
+			if(tipo.getIdTipoDenuncia()  == null || tipo.getIdTipoDenuncia() == 0 ) {
+				tipo.setIdTipoDenuncia(1);
+			}
+			
+			service = new UsuarioServiceImpl();
+			Usuario user = (Usuario) service.consultarObjetoId(idUsuario);
+			
+			service = new DenunciaServiceImpl();
+			Denuncia denuncia = new Denuncia();
+			denuncia.setDataAconteceu(new Date());
+			denuncia.setAtivo(true);
+			denuncia.setLocalDenuncia(local);
+			denuncia.setTipoDenuncia(tipo);
+			denuncia.setObservacao(observacao);
+			denuncia.setUsuario(user);			
+			denuncia = (Denuncia) service.gravar(denuncia);
+			System.out.println("gravou denuncia...");
+			if(arrayImagem != null){
+				for(int i = 0; i < arrayImagem.length(); i++){
+					JSONObject json_imagem = arrayImagem.getJSONObject(i);					
+					ImagemDenuncia imgDenuncia = new ImagemDenuncia();
+					imgDenuncia.setAtivo(true);
+					imgDenuncia.setCaminho(json_imagem.getString("image"));
+					imgDenuncia.setDenuncia(denuncia);
+					imgDenuncia.setDescricao("...fazer posteriomente...");
+					service = new ImagemDenunciaServiceImpl();
+					imgDenuncia = (ImagemDenuncia) service.gravar(imgDenuncia);
+				}
+			}
 			String json = gerarJson(denuncia);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){

@@ -55,6 +55,23 @@ public class ViewDetalheDenunciaResource extends SuperResource{
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
+	}
+	
+	@GET
+	@Path("site/{id}")
+	public Response getViewSite(@PathParam("id") int id)	{
+		setService(new ViewDetalheDenunciaServiceImpl());
+		try{
+			List<ImagemDenuncia> listImg = new ArrayList<ImagemDenuncia>();
+			ImagemDenunciaService servImagem = new ImagemDenunciaServiceImpl();
+			listImg = servImagem.consultarPorDenuncia(id);
+			ViewDetalheDenuncia view = (ViewDetalheDenuncia) getService().consultarObjetoId(id);
+			JsonObject jsonobject = gerarJsonDenuncia(view, listImg);
+			System.out.println(jsonobject.toString());
+			return Response.ok(jsonobject.toString()).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
 		
 	}
 

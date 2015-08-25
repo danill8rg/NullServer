@@ -32,11 +32,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
     @NamedQuery(name = "Usuario.findByIdUsuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario"),
-    //@NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE lower(u.email) LIKE lower(:email)"),
-    //@NamedQuery(name = "Usuario.findByEmailAtivo", query = "SELECT u FROM Usuario u WHERE lower(u.email) LIKE lower(:email) and u.ativo = :ativo"),
+    @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE lower(u.email) LIKE :email"),
+    @NamedQuery(name = "Usuario.findByEmailAtivo", query = "SELECT u FROM Usuario u WHERE lower(u.email) LIKE :email and u.ativo = :ativo"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha"),
-    //@NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE lower(u.nome) LIKE lower(:nome)"),
-    //@NamedQuery(name = "Usuario.findByNomeAtivo", query = "SELECT u FROM Usuario u WHERE lower(u.nome) LIKE lower(:nome) and u.ativo = :ativo"),
+    @NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE lower(u.nome) LIKE :nome"),
+    @NamedQuery(name = "Usuario.findByNomeAtivo", query = "SELECT u FROM Usuario u WHERE lower(u.nome) LIKE :nome and u.ativo = :ativo"),
     @NamedQuery(name = "Usuario.logar", query = "SELECT u FROM Usuario u WHERE u.nome = :nome and u.senha = :senha"),
     @NamedQuery(name = "Usuario.logarEmail", query = "SELECT u FROM Usuario u WHERE u.email LIKE :email and u.senha LIKE :senha"),
     @NamedQuery(name = "Usuario.findByAtivo", query = "SELECT u FROM Usuario u WHERE u.ativo = :ativo")})

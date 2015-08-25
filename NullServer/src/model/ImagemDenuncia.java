@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ImagemDenuncia.findByIdImagemDenuncia", query = "SELECT i FROM ImagemDenuncia i WHERE i.idImagemDenuncia = :idImagemDenuncia"),
     @NamedQuery(name = "ImagemDenuncia.findByCaminho", query = "SELECT i FROM ImagemDenuncia i WHERE i.caminho = :caminho"),
     @NamedQuery(name = "ImagemDenuncia.findByDescricao", query = "SELECT i FROM ImagemDenuncia i WHERE i.descricao = :descricao"),
-    //@NamedQuery(name = "ImagemDenuncia.findByIdDenuncia", query = "SELECT i FROM ImagemDenuncia i join Denuncia d on d.idDenuncia =  i.denuncia.idDenuncia WHERE i.denuncia.idDenuncia = :idDenuncia"),
+    @NamedQuery(name = "ImagemDenuncia.findByIdDenuncia", query = "SELECT i FROM ImagemDenuncia i join i.denuncia image WHERE i.denuncia.idDenuncia = :idDenuncia"),
     @NamedQuery(name = "ImagemDenuncia.findByAtivo", query = "SELECT i FROM ImagemDenuncia i WHERE i.ativo = :ativo")})
 public class ImagemDenuncia implements Serializable {
     private static final long serialVersionUID = 1L;

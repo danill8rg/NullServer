@@ -83,9 +83,8 @@ public Response uploadFile(File image) throws IOException {
 		System.out.println("Success !!!!!");
 		fis.close();
 		JsonObject json = new  JsonObject();
-		json.addProperty("caminho", "http://localhost:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
-		//json.addProperty("caminho", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
 		//json.addProperty("caminho", "http://localhost:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
+		json.addProperty("caminho", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
 		System.out.println(json.toString());
 		return Response.ok(json.toString()).build();	
 	} catch (Exception e) {

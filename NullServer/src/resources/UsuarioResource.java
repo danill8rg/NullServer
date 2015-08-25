@@ -176,4 +176,52 @@ public class UsuarioResource extends SuperResource{
 		}
 	}
 
+
+	@POST
+	@Path("logarFace")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public	Response logarFace(String jsonRecebido)	{
+		try{
+			service = new UsuarioServiceImpl();
+			//Converte String JSON para objeto Java
+			JSONObject dados_array = new JSONObject(jsonRecebido);
+			String nome = null; String email = null; String senha = null;
+			if( ! dados_array.isNull("nome")){
+				nome = String.valueOf(dados_array.getLong("nome"));
+			}
+			if( ! dados_array.isNull("email")){
+				email = String.valueOf(dados_array.getLong("email"));
+			}
+			if( ! dados_array.isNull("senha")){
+				senha = String.valueOf(dados_array.getLong("senha"));
+			}
+						
+			UsuarioService userService = new  UsuarioServiceImpl();
+			
+			Usuario user_Aux = new Usuario(nome,senha,email);			
+			user_Aux = userService.logar(user_Aux);
+			
+			if(user_Aux != null){
+				String json = gerarJsonUsuario(user_Aux);
+				return Response.ok(json, MediaType.APPLICATION_JSON).build();
+			}
+			
+			if(!userService.validarEmail(email)){
+				return Response.serverError().entity("E-mail já existe!").build();
+			}
+			
+			if(nome == null || email == null || senha == null || nome.equalsIgnoreCase("") || email.equalsIgnoreCase("") || senha.equalsIgnoreCase("")){
+				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
+			}
+			Usuario user = new Usuario(nome,senha,email);
+			//user.setIdUsuario(0);
+			user = (Usuario) userService.gravar(user);
+			String json = gerarJsonUsuario(user);
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
 }
