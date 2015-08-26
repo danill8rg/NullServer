@@ -77,8 +77,9 @@ public Response uploadFile(File image) throws IOException {
 		InputStream inputStream = is;
 		byte[] bytes = IOUtils.toByteArray(inputStream);
 		// constructs upload file path
-		file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/"
-				+ fileNameAux;
+		//file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/"
+		file_path = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/temp/"
+						+ fileNameAux;
 		writeFile(bytes, file_path);
 		System.out.println("Success !!!!!");
 		fis.close();

@@ -61,8 +61,8 @@ public class Utils {
 	public static String SalvarImagemTemp(byte[] arquivo, String nome) {
 		byte[] imgBytes = arquivo;
 	    try {
-	    	FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome);
-	        //FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + file);
+	    	//FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome);
+	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome);
 	        fos.write(imgBytes);
 	        FileDescriptor fd = fos.getFD();
 	        fos.flush();
