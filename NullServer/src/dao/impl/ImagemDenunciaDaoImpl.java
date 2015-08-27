@@ -29,4 +29,15 @@ public class ImagemDenunciaDaoImpl extends SuperDaoImpl<ImagemDenuncia, Integer>
 		return "1";
 	}
 
+	@Override
+	public String caminhoPrimeiraImagem(int idDenuncia) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("idDenuncia", idDenuncia); 
+        ImagemDenuncia image = consultarObjeto("ImagemDenuncia.findByIdDenuncia", parameters);
+        if( image == null){
+        	return null;
+        }
+        return image.getCaminho();
+	}
+
 }

@@ -9,4 +9,6 @@ public interface ImagemDenunciaService extends SuperService<ImagemDenuncia, Inte
 	public List<ImagemDenuncia> consultarPorDenuncia(int idDenuncia);
 	
 	public String proximoIdImagem();
+	
+	public String caminhoPrimeiraImagem(int idDenuncia);
 }

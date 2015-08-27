@@ -4,6 +4,7 @@ package resources;
 import java.util.ArrayList;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -95,6 +96,25 @@ public class ViewMapDenunciaResource extends SuperResource{
 			jsonArray.add(json);
 		}
 		return jsonArray;
+	}
+	
+	@POST
+	@Path("/teste")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getViewTeste()	{
+		setService(new ViewMapDenunciaServiceImpl());
+		try{
+			JsonObject json = new JsonObject();
+			json.addProperty("isThereMore", false);
+			JsonArray jsonArray = new JsonArray();
+		
+			json.add("cars", jsonArray);
+			
+			return Response.ok(json.toString(), MediaType.APPLICATION_JSON).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+		
 	}
 
 }

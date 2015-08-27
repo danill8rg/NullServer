@@ -9,4 +9,6 @@ public interface ImagemDenunciaDao extends SuperDao<ImagemDenuncia, Integer> {
 	public List<ImagemDenuncia> consultarPorIddenuncia(int idDenuncia);
 	
 	public String proximoIdImagem();
+
+	public String caminhoPrimeiraImagem(int idDenuncia);
 }

@@ -1,9 +1,11 @@
 package service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.ViewDetalheDenuncia;
 import service.ViewDetalheDenunciaService;
+import dao.ViewDetalheDenunciaDao;
 import dao.impl.ViewDetalheDenunciaDaoImpl;
 
 public class ViewDetalheDenunciaServiceImpl extends SuperServiceImpl<ViewDetalheDenuncia, Integer> implements ViewDetalheDenunciaService {
@@ -55,5 +57,22 @@ public class ViewDetalheDenunciaServiceImpl extends SuperServiceImpl<ViewDetalhe
 			System.out.println("Erro Mensgem :" + e.getMessage());
 			return new ViewDetalheDenuncia();
 		}
+	}
+
+	@Override
+	public List<ViewDetalheDenuncia> consultarPorUsuario(int id) {
+		try{
+			ViewDetalheDenunciaDao daoView = new ViewDetalheDenunciaDaoImpl();
+			ArrayList<ViewDetalheDenuncia> array = new  ArrayList<ViewDetalheDenuncia>(daoView.consultarPorUsuario(id));
+			if(array != null){
+				return array;
+			}
+			return new ArrayList<ViewDetalheDenuncia>();
+		}catch(Exception e){
+			System.out.println("Erro ao consultar Todos Bairro");
+			System.out.println("Erro :" + e);
+			System.out.println("Erro Mensgem :" + e.getMessage());
+			return new ArrayList<ViewDetalheDenuncia>();
+		}		
 	}
 }

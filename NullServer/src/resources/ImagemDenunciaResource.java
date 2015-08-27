@@ -78,15 +78,13 @@ public Response uploadFile(File image) throws IOException {
 		byte[] bytes = IOUtils.toByteArray(inputStream);
 		// constructs upload file path
 		//file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/"
-		file_path = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/temp/"
-						+ fileNameAux;
+		file_path = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/temp/" + fileNameAux;
 		writeFile(bytes, file_path);
 		System.out.println("Success !!!!!");
 		fis.close();
 		JsonObject json = new  JsonObject();
 		//json.addProperty("caminho", "http://localhost:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
 		json.addProperty("caminho", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/temp/" + fileNameAux);
-		System.out.println(json.toString());
 		return Response.ok(json.toString()).build();	
 	} catch (Exception e) {
 		e.printStackTrace();

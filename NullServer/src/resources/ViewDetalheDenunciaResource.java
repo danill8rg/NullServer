@@ -8,19 +8,16 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.json.JSONObject;
 
 import model.ImagemDenuncia;
 import model.ViewDetalheDenuncia;
 import service.ImagemDenunciaService;
+import service.ViewDetalheDenunciaService;
 import service.impl.ImagemDenunciaServiceImpl;
 import service.impl.ViewDetalheDenunciaServiceImpl;
 import util.Utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -109,6 +106,46 @@ public class ViewDetalheDenunciaResource extends SuperResource{
 		}
 		dados_array_json.add("listImagem", arrayImagem);
 		return dados_array_json;
+	}
+	
+	@GET
+	@Path("myDenuncia/{id}")
+	public Response getViewMinhasDenuncias(@PathParam("id") int id)	{
+		if (id <= 0)  Response.ok("").build();	
+		try{
+			ViewDetalheDenunciaService serviceView = new ViewDetalheDenunciaServiceImpl();
+
+			List<ViewDetalheDenuncia> listDenuncias = new ArrayList<ViewDetalheDenuncia>(serviceView.consultarTodos(new ViewDetalheDenuncia()));
+			
+			JsonArray jsonobject = gerarJsonDenunciaMyDenuncias(listDenuncias);
+			System.out.println(jsonobject.toString());
+			return Response.ok(jsonobject.toString()).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+	private JsonArray gerarJsonDenunciaMyDenuncias(List<ViewDetalheDenuncia> listDenuncias) {
+		JsonArray array_json = new JsonArray();
+		ImagemDenunciaService sericeView = new ImagemDenunciaServiceImpl();
+		SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
+		for(ViewDetalheDenuncia v : listDenuncias){
+			JsonObject json = new JsonObject();
+			String caminhoImage = sericeView.caminhoPrimeiraImagem(v.getIdDenuncia());
+			json.addProperty("image", caminhoImage);
+			json.addProperty("tipoDenuncia", v.getTipoDenuncia());
+			json.addProperty("tipoDenuncia", v.getTipoDenuncia());
+			json.addProperty("dataDenuncia", sdf1.format(v.getDataAconteceu()));
+			String bairro = v.getBairro();
+			if (bairro == null){
+				bairro = "Não registrado";
+			}
+			json.addProperty("bairro", bairro);
+			json.addProperty("idDenuncia", v.getIdDenuncia());
+			array_json.add(json);
+		}
+		return array_json;
 	}
 	
 }
