@@ -116,5 +116,25 @@ public class ViewMapDenunciaResource extends SuperResource{
 		}
 		
 	}
+	
+	@POST
+	@Path("/appMapa")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getViewAPpp()	{
+		service = new ViewMapDenunciaServiceImpl();
+		try{
+			ViewMapDenuncia view = new ViewMapDenuncia();
+			ArrayList<ViewMapDenuncia> list = service.consultarTodos(view);
+			for(ViewMapDenuncia v : list ){
+				v.setNomeUsuario(null);
+				v.setObservacao(null);
+			}
+			Gson gson = new Gson();
+			String json = gson.toJson(list);
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
 
 }
