@@ -117,7 +117,7 @@ public class ViewMapDenunciaResource extends SuperResource{
 		
 	}
 	
-	@POST
+	@GET
 	@Path("/appMapa")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getViewAPpp()	{

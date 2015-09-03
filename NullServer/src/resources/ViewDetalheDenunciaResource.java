@@ -148,4 +148,21 @@ public class ViewDetalheDenunciaResource extends SuperResource{
 		return array_json;
 	}
 	
+	@GET
+	@Path("myDenunciaApp/{id}")
+	public Response getViewMinhasDenunciasApp(@PathParam("id") int id)	{
+		if (id <= 0)  Response.ok("").build();	
+		try{
+			ViewDetalheDenunciaService serviceView = new ViewDetalheDenunciaServiceImpl();
+
+			List<ViewDetalheDenuncia> listDenuncias = new ArrayList<ViewDetalheDenuncia>(serviceView.consultarPorUsuario(id));
+			
+			JsonArray jsonobject = gerarJsonDenunciaMyDenuncias(listDenuncias);
+			System.out.println(jsonobject.toString());
+			return Response.ok(jsonobject.toString()).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+	
 }
