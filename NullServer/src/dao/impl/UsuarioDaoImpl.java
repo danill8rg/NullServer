@@ -53,4 +53,15 @@ public class UsuarioDaoImpl extends SuperDaoImpl<Usuario, Integer> implements Us
 		return false;
 	}
 
+	@Override
+	public Usuario consultarPorEmail(String email) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("email", email); 
+        List<Usuario> listUser = super.consultarPorNamedQueryEParametros("Usuario.findByEmail", parameters);
+        if(listUser.isEmpty()){
+        	return null;
+        }
+		return listUser.get(0);
+	}
+
 }

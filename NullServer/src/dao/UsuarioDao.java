@@ -16,4 +16,6 @@ public interface UsuarioDao extends SuperDao<Usuario, Integer> {
 
 	public boolean validarEmail(String email);
 	
+	public Usuario consultarPorEmail(String email);
+	
 }

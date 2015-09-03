@@ -304,4 +304,31 @@ public class UsuarioResource extends SuperResource{
 			return Response.ok("", MediaType.APPLICATION_JSON).build();
 		}
 	}
+	
+	@POST
+	@Path("lembrar_senha")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public	Response lembrarSenha(String jsonRecebido)	{
+		try{
+			JSONObject dados_array = new JSONObject(jsonRecebido);
+			String email = null;
+			if( ! dados_array.isNull("email")){
+				email = dados_array.getString("email");
+			}else{
+				return Response.ok("E-mail não foi informado corretamente!", MediaType.APPLICATION_JSON).build();
+			}
+		
+						
+			UsuarioService userService = new  UsuarioServiceImpl();
+			
+			if(userService.relebrarEmail(email)){
+				return Response.ok("Foi lhe enviado um e-mail com a senha, Por gentileza verifique!!!", MediaType.APPLICATION_JSON).build();	
+			}
+			return Response.ok("E-mail informado não foi encontrado, no sistema!", MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			return Response.ok("ocorreu um erro ao pesquisar e-mail! Por gentileza tente novamente mais tarde!", MediaType.APPLICATION_JSON).build();
+		}
+	}
 }

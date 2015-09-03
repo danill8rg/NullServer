@@ -6,6 +6,7 @@ import model.DadosContaUsuario;
 import model.Usuario;
 import service.DadosContaUsuarioService;
 import service.UsuarioService;
+import util.UtilEmail;
 import dao.UsuarioDao;
 import dao.impl.TipoUsuarioDaoImpl;
 import dao.impl.UsuarioDaoImpl;
@@ -138,5 +139,19 @@ public class UsuarioServiceImpl extends SuperServiceImpl<Usuario, Integer> imple
 	public boolean validarEmail(String email) throws Exception {
 		UsuarioDao userDao = new UsuarioDaoImpl();
 		return userDao.validarEmail(email);
+	}
+
+	@Override
+	public boolean relebrarEmail(String email) {
+		UsuarioDao userDao = new UsuarioDaoImpl();
+		Usuario user = userDao.consultarPorEmail(email);
+		if(user != null){
+			String mensagem = "";
+			mensagem = mensagem + "Muito obrigado por usar o NullPointer.";
+			mensagem = mensagem + "Sua senha é : " + user.getSenha();
+			UtilEmail.mandaEmail(email, mensagem);
+			return true;
+		}
+		return false;
 	}
 }
