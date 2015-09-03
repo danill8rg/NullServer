@@ -1,7 +1,9 @@
 package resources;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -13,13 +15,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import model.Usuario;
+import model.ViewMensagem;
 
 import org.json.JSONObject;
 
 import service.UsuarioService;
+import service.ViewMensagemService;
 import service.impl.UsuarioServiceImpl;
+import service.impl.ViewMensagemServiceImpl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -40,11 +47,10 @@ public class MensagemResource extends SuperResource{
 	@GET
 	@Path("{id}")
 	public Response getUsuario(@PathParam("id") int id)	{
-		setService(new UsuarioServiceImpl());
+		ViewMensagemService serviceView = new ViewMensagemServiceImpl();
 		try{
-			Usuario user = (Usuario) getService().consultarObjetoId(id);
-			Gson gson = new Gson();
-			String json = gson.toJson(user);
+			List<ViewMensagem> listaMensagem = (serviceView.consultarPorDenuncia(id));
+			String json = gerarJsonViewMensagem(listaMensagem);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
@@ -52,6 +58,29 @@ public class MensagemResource extends SuperResource{
 		
 	}
 	
+	private String gerarJsonViewMensagem(List<ViewMensagem> listaMensagem) {
+		JsonArray array_json = new JsonArray();
+		SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
+        
+		for(ViewMensagem view : listaMensagem){
+			JsonObject json = new JsonObject();
+			if(view.getCaminhoImagem() != null){
+				json.addProperty("caminhoimagem", view.getCaminhoImagem());
+			}else{
+				json.addProperty("caminhoimagem", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/usuarioSemImagem.png");
+			}
+			json.addProperty("texto", view.getTexto());
+			json.addProperty("idDenuncia", view.getIdDenuncia());
+			json.addProperty("dataAdicionada", sdf1.format(view.getDataAdicionado()));
+			json.addProperty("nomeUsuario", view.getNomeUsuario());
+			json.addProperty("idMensagem", view.getIdMensagem());
+			array_json.add(json);
+		}
+		
+		return array_json.toString();
+	}
+
 	@GET
 	@Path("validaremail/{email}")
 	public Response getValidarEmail(@PathParam("email") String email)	{

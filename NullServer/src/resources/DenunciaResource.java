@@ -142,6 +142,10 @@ public class DenunciaResource extends SuperResource{
 				tipo.setIdTipoDenuncia(1);
 			}
 			
+			if(observacao != null && observacao.length() > 300 ){
+				observacao = observacao.substring(0, 298);
+			}
+			
 			service = new UsuarioServiceImpl();
 			Usuario user = (Usuario) service.consultarObjetoId(Integer.parseInt("1"));
 			

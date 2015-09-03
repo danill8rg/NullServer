@@ -2,6 +2,9 @@ package service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
+import model.ViewMensagem;
 
 public interface SuperService<T, ID extends Serializable> {
 

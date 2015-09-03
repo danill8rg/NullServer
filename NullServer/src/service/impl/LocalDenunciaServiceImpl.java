@@ -121,7 +121,8 @@ public class LocalDenunciaServiceImpl extends SuperServiceImpl<LocalDenuncia, In
 	}
 	
 	private LocalDenuncia procurarEndereco(LocalDenuncia local) {
-		try {
+		
+		try{
 			String jsonString = null;
 			URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + local.getLatitude() + "," + local.getLongitude() + "&sensor=true");
 			HttpURLConnection conexao = (HttpURLConnection) url.openConnection();		
@@ -208,19 +209,306 @@ public class LocalDenunciaServiceImpl extends SuperServiceImpl<LocalDenuncia, In
 		    }
 		    
 		    local.setCep(cep); local.setRua(rua);
-			if(nomeBairro == null || nomeCidade == null || nomeEstado == null ||
-					nomePais == null){
+		    
+		    Cidade cidade = null;
+		    CidadeDao daoCidade = new CidadeDaoImpl();
+		    if(nomeCidade != null){
+		    	cidade = daoCidade.consultaNome(nomeCidade);
+		    }
+		    Bairro bairro = null;
+		    BairroDao daoBairro = new BairroDaoImpl();
+		    if(nomeBairro !=  null){
+				bairro = daoBairro.consultarNome(nomeBairro);
+		    }
+		    Estado estado = null;
+		    EstadoDao daoEstado = new EstadoDaoImpl();
+		    if(nomeEstado != null){
+				estado = daoEstado.consultarNome(nomeEstado);
+		    }
+			
+		    Pais pais = null;
+		    PaisDao daoPais = new PaisDaoImpl();
+		    if(nomePais != null){
+		    	pais = daoPais.consultarNome(nomePais);
+		    }
+			
+		    if(nomePais != null && nomeEstado != null && nomeCidade != null && nomeBairro != null ){
+				return salvarComTudo(nomePais,nomeEstado,nomeCidade,nomeBairro,pais,estado,cidade , bairro, local);
+		    } else{
+		    	if(nomePais != null && nomeEstado == null && nomeCidade != null && nomeBairro != null ){
+					return salvarSemEstado(nomePais,nomeEstado,nomeCidade,nomeBairro,pais,estado,cidade , bairro, local);
+			    } else{
+			    	if(nomePais != null && nomeEstado != null && nomeCidade == null && nomeBairro != null ){
+						return salvarSemCidade(nomePais,nomeEstado,nomeCidade,nomeBairro,pais,estado,cidade , bairro, local);
+				    } else{
+				    	if(nomePais != null && nomeEstado != null && nomeCidade != null && nomeBairro == null ){
+							return salvarSemBairro(nomePais,nomeEstado,nomeCidade,nomeBairro,pais,estado,cidade , bairro, local);
+					    } else{
+					    	if(nomePais != null && nomeEstado == null && nomeCidade != null && nomeBairro == null ){
+								return salvarSemEstadoSemBairro(nomePais,nomeEstado,nomeCidade,nomeBairro,pais,estado,cidade , bairro, local);
+						    }
+					    }
+				    }
+			    }
+		    }
+					return local;
+		}catch(Exception e){
+			return local;
+		}
+	}
+
+	private LocalDenuncia salvarSemEstadoSemBairro(String nomePais,
+			String nomeEstado, String nomeCidade, String nomeBairro, Pais pais,
+			Estado estado, Cidade cidade, Bairro bairro, LocalDenuncia local) {
+		try{
+			CidadeDao daoCidade = new CidadeDaoImpl();
+			BairroDao daoBairro = new BairroDaoImpl();
+			EstadoDao daoEstado = new EstadoDaoImpl();
+			PaisDao daoPais = new PaisDaoImpl();
+			nomeBairro = "Nao informado";
+			nomeEstado = "Nao informado";
+			bairro = new Bairro();
+			estado = new Estado();
+			if(pais.getIdPais()== null ){
+				pais.setNome(nomePais);
+				pais = daoPais.gravar(pais);
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				cidade.setNome(nomeCidade);
+				cidade.setEstado(estado);
+				cidade = daoCidade.gravar(cidade);
+				bairro.setNome(nomeBairro);
+				bairro.setCidade(cidade);
+				bairro = daoBairro.gravar(bairro);
+				local.setBairro(bairro);
+				return local;
+			}else{
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				if(cidade.getIdCidade() == null){
+					cidade.setNome(nomeCidade);
+					cidade.setEstado(estado);
+					cidade = daoCidade.gravar(cidade);
+					bairro.setNome(nomeBairro);
+					bairro.setCidade(cidade);
+					bairro = daoBairro.gravar(bairro);
+					local.setBairro(bairro);
+					return local;
+				}else{
+					bairro.setNome(nomeBairro);
+					bairro.setCidade(cidade);
+					bairro = daoBairro.gravar(bairro);
+					local.setBairro(bairro);
+					return local;
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return local;
+	}
+
+	private LocalDenuncia salvarSemBairro(String nomePais, String nomeEstado,
+			String nomeCidade, String nomeBairro, Pais pais, Estado estado,
+			Cidade cidade, Bairro bairro, LocalDenuncia local) {
+		try{
+			CidadeDao daoCidade = new CidadeDaoImpl();
+			BairroDao daoBairro = new BairroDaoImpl();
+			EstadoDao daoEstado = new EstadoDaoImpl();
+			PaisDao daoPais = new PaisDaoImpl();
+			nomeBairro = "Nao informado";
+			bairro = new Bairro();
+			if(pais.getIdPais()== null ){
+				pais.setNome(nomePais);
+				pais = daoPais.gravar(pais);
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				cidade.setNome(nomeCidade);
+				cidade.setEstado(estado);
+				cidade = daoCidade.gravar(cidade);
+				bairro.setNome(nomeBairro);
+				bairro.setCidade(cidade);
+				bairro = daoBairro.gravar(bairro);
+				local.setBairro(bairro);
+				return local;
+			}else{
+				if(estado.getIdEstado() == null){
+					estado.setNome(nomeEstado);
+					estado.setPais(pais);
+					estado = daoEstado.gravar(estado);
+					cidade.setNome(nomeCidade);
+					cidade.setEstado(estado);
+					cidade = daoCidade.gravar(cidade);
+					bairro.setNome(nomeBairro);
+					bairro.setCidade(cidade);
+					bairro = daoBairro.gravar(bairro);
+					local.setBairro(bairro);
+					return local;
+				}else{
+					if(cidade.getIdCidade() == null){
+						cidade.setNome(nomeCidade);
+						cidade.setEstado(estado);
+						cidade = daoCidade.gravar(cidade);
+						bairro.setNome(nomeBairro);
+						bairro.setCidade(cidade);
+						bairro = daoBairro.gravar(bairro);
+						local.setBairro(bairro);
+						return local;
+					}else{
+						bairro.setNome(nomeBairro);
+						bairro.setCidade(cidade);
+						bairro = daoBairro.gravar(bairro);
+						local.setBairro(bairro);
+						return local;
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return local;
+	}
+
+	private LocalDenuncia salvarSemCidade(String nomePais, String nomeEstado,
+			String nomeCidade, String nomeBairro, Pais pais, Estado estado,
+			Cidade cidade, Bairro bairro, LocalDenuncia local) {
+		try{
+			CidadeDao daoCidade = new CidadeDaoImpl();
+			BairroDao daoBairro = new BairroDaoImpl();
+			EstadoDao daoEstado = new EstadoDaoImpl();
+			PaisDao daoPais = new PaisDaoImpl();
+			nomeCidade = "Nao foi Informado";
+			cidade = new Cidade();
+			if(pais.getIdPais()== null ){
+				pais.setNome(nomePais);
+				pais = daoPais.gravar(pais);
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				cidade.setNome(nomeCidade);
+				cidade.setEstado(estado);
+				cidade = daoCidade.gravar(cidade);
+				bairro.setNome(nomeBairro);
+				bairro.setCidade(cidade);
+				bairro = daoBairro.gravar(bairro);
+				local.setBairro(bairro);
+				return local;
+			}else{
+				if(estado.getIdEstado() == null){
+					estado.setNome(nomeEstado);
+					estado.setPais(pais);
+					estado = daoEstado.gravar(estado);
+					cidade.setNome(nomeCidade);
+					cidade.setEstado(estado);
+					cidade = daoCidade.gravar(cidade);
+					bairro.setNome(nomeBairro);
+					bairro.setCidade(cidade);
+					bairro = daoBairro.gravar(bairro);
+					local.setBairro(bairro);
+					return local;
+				}else{
+					cidade.setNome(nomeCidade);
+					cidade.setEstado(estado);
+					cidade = daoCidade.gravar(cidade);
+					if(bairro.getIdBairro() == null){
+						bairro.setNome(nomeBairro);
+						bairro.setCidade(cidade);
+						bairro = daoBairro.gravar(bairro);
+						local.setBairro(bairro);
+						return local;
+					}
+				}
+			}
+			if(bairro.getCidade().getIdCidade() != cidade.getIdCidade()){
+				Bairro bairroAux = new Bairro();
+				bairroAux.setNome(nomeBairro);
+				bairroAux.setCidade(cidade);
+				bairroAux = daoBairro.gravar(bairroAux);
+				local.setBairro(bairroAux);
 				return local;
 			}
+			local.setBairro(bairro);
+			return local;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return local;
+	}
+
+	private LocalDenuncia salvarSemEstado(String nomePais, String nomeEstado,
+			String nomeCidade, String nomeBairro, Pais pais, Estado estado,
+			Cidade cidade, Bairro bairro, LocalDenuncia local) {
+		try{
 			CidadeDao daoCidade = new CidadeDaoImpl();
-			Cidade cidade = daoCidade.consultaNome(nomeCidade);
 			BairroDao daoBairro = new BairroDaoImpl();
-			Bairro bairro = daoBairro.consultarNome(nomeBairro);
 			EstadoDao daoEstado = new EstadoDaoImpl();
-			Estado estado = daoEstado.consultarNome(nomeEstado);
 			PaisDao daoPais = new PaisDaoImpl();
-			Pais pais = daoPais.consultarNome(nomePais);
-	
+			nomeEstado = "Nao informado";
+			estado = new Estado();
+			if(pais.getIdPais()== null ){
+				pais.setNome(nomePais);
+				pais = daoPais.gravar(pais);
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				cidade.setNome(nomeCidade);
+				cidade.setEstado(estado);
+				cidade = daoCidade.gravar(cidade);
+				bairro.setNome(nomeBairro);
+				bairro.setCidade(cidade);
+				bairro = daoBairro.gravar(bairro);
+				local.setBairro(bairro);
+				return local;
+			}else{
+				estado.setNome(nomeEstado);
+				estado.setPais(pais);
+				estado = daoEstado.gravar(estado);
+				if(cidade.getIdCidade() == null){
+					cidade.setNome(nomeCidade);
+					cidade.setEstado(estado);
+					cidade = daoCidade.gravar(cidade);
+					bairro.setNome(nomeBairro);
+					bairro.setCidade(cidade);
+					bairro = daoBairro.gravar(bairro);
+					local.setBairro(bairro);
+					return local;
+				}else{
+					if(bairro.getIdBairro() == null){
+						bairro.setNome(nomeBairro);
+						bairro.setCidade(cidade);
+						bairro = daoBairro.gravar(bairro);
+						local.setBairro(bairro);
+						return local;
+					}
+				}
+			}
+			if(bairro.getCidade().getIdCidade() != cidade.getIdCidade()){
+				Bairro bairroAux = new Bairro();
+				bairroAux.setNome(nomeBairro);
+				bairroAux.setCidade(cidade);
+				bairroAux = daoBairro.gravar(bairroAux);
+				local.setBairro(bairroAux);
+				return local;
+			}
+			local.setBairro(bairro);
+			return local;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return local;
+	}
+
+	private LocalDenuncia salvarComTudo(String nomePais, String nomeEstado,
+			String nomeCidade, String nomeBairro, Pais pais, Estado estado,
+			Cidade cidade, Bairro bairro, LocalDenuncia local) {
+		try{
+			CidadeDao daoCidade = new CidadeDaoImpl();
+			BairroDao daoBairro = new BairroDaoImpl();
+			EstadoDao daoEstado = new EstadoDaoImpl();
+			PaisDao daoPais = new PaisDaoImpl();
 			if(pais.getIdPais()== null ){
 				pais.setNome(nomePais);
 				pais = daoPais.gravar(pais);
@@ -280,11 +568,10 @@ public class LocalDenunciaServiceImpl extends SuperServiceImpl<LocalDenuncia, In
 			local.setBairro(bairro);
 			return local;
 		}catch(Exception e){
-			System.out.println("Erro ao consultar Todas as imagem Denuncias");
-			System.out.println("Erro :" + e);
-			System.out.println("Erro Mensgem :" + e.getMessage());
-			return local;
-		}		
+			e.printStackTrace();
+		}
+		return local;
 	}
+
 		
 }
