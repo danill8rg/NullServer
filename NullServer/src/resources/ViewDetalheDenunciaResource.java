@@ -12,10 +12,13 @@ import javax.ws.rs.core.Response;
 
 import model.ImagemDenuncia;
 import model.ViewDetalheDenuncia;
+import model.ViewMensagem;
 import service.ImagemDenunciaService;
 import service.ViewDetalheDenunciaService;
+import service.ViewMensagemService;
 import service.impl.ImagemDenunciaServiceImpl;
 import service.impl.ViewDetalheDenunciaServiceImpl;
+import service.impl.ViewMensagemServiceImpl;
 import util.Utils;
 
 import com.google.gson.JsonArray;
@@ -163,6 +166,80 @@ public class ViewDetalheDenunciaResource extends SuperResource{
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
+	}
+	
+	@GET
+	@Path("detalhe_denuncia_app/{id}")
+	public Response getViewDetalheAPP(@PathParam("id") int id)	{
+		setService(new ViewDetalheDenunciaServiceImpl());
+		try{
+			List<ImagemDenuncia> listImg = new ArrayList<ImagemDenuncia>();
+			ImagemDenunciaService servImagem = new ImagemDenunciaServiceImpl();
+			listImg = servImagem.consultarPorDenuncia(id);
+			
+			List<ViewMensagem> listMensagem = new ArrayList<ViewMensagem>();
+			ViewMensagemService servMensagem = new ViewMensagemServiceImpl();
+			listMensagem = servMensagem.consultarPorDenuncia(id);
+			
+			ViewDetalheDenuncia view = (ViewDetalheDenuncia) getService().consultarObjetoId(id);
+			
+			JsonArray jsonobject = gerarJsonDenunciaAndroid(view, listImg, listMensagem);
+			System.out.println(jsonobject.toString());
+			return Response.ok(jsonobject.toString()).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+		
+	}
+
+	private JsonArray gerarJsonDenunciaAndroid(ViewDetalheDenuncia view,
+			List<ImagemDenuncia> listImg, List<ViewMensagem> listMensagem) {
+		JsonArray array = new JsonArray();
+		JsonObject json = new JsonObject();
+		SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
+		try{
+			json.addProperty("tipoDenuncia", view.getTipoDenuncia());
+			json.addProperty("dataDenuncia", sdf1.format(view.getDataAconteceu()));	
+			json.addProperty("idDenunciante", view.getIdDenunciante());
+			json.addProperty("idDenuncia", view.getIdDenuncia());
+			json.addProperty("rua", view.getRua());
+			json.addProperty("bairro", view.getBairro());
+			json.addProperty("cidade", view.getCidade());
+			json.addProperty("estado", view.getEstado());
+			json.addProperty("pais", view.getPais());
+			json.addProperty("nomeDenunciante", view.getNomeDenunciante());
+			json.addProperty("cep", view.getCep());
+			json.addProperty("latitude", view.getLatitude());
+			json.addProperty("longitude", view.getLongitude());
+			json.addProperty("observacao", view.getObservacao());
+			
+			JsonArray arrayImagem = new JsonArray();
+			for(ImagemDenuncia image : listImg){
+				JsonObject json_image = new JsonObject();
+				json_image.addProperty("caminho", image.getCaminho());
+				arrayImagem.add(json_image);
+			}
+			
+			JsonArray arrayMensagem = new JsonArray();
+			for(ViewMensagem mensagem : listMensagem){
+				JsonObject json_mensagem = new JsonObject();
+				json_mensagem.addProperty("caminhoImagem", mensagem.getCaminhoImagem());
+				json_mensagem.addProperty("nomeUsuario", mensagem.getNomeUsuario());
+				json_mensagem.addProperty("texto", mensagem.getTexto());
+				json_mensagem.addProperty("idDenuncia", mensagem.getIdDenuncia());
+				json_mensagem.addProperty("idMensagem", mensagem.getIdMensagem());
+				json_mensagem.addProperty("dataAdicionado", sdf1.format(mensagem.getDataAdicionado()));
+				arrayMensagem.add(json_mensagem);
+			}
+			
+			json.add("arrayMensagem", arrayMensagem);
+			json.add("arrayImagem", arrayImagem);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		array.add(json);
+		return array;
 	}
 	
 }

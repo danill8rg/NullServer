@@ -1,5 +1,7 @@
 package teste;
 
+import java.io.File;
+
 import model.LocalDenuncia;
 import service.impl.LocalDenunciaServiceImpl;
 

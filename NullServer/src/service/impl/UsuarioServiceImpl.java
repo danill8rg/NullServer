@@ -23,6 +23,7 @@ public class UsuarioServiceImpl extends SuperServiceImpl<Usuario, Integer> imple
 			object = getDao().gravar(object);
 			DadosContaUsuario dados= new DadosContaUsuario();
 			dados.setUsuario(object);
+			dados.setIdContaUsuario(object.getIdUsuario());
 			DadosContaUsuarioService contaservice = new DadosContaUsuarioServiceImpl();
 			contaservice.gravar(dados);			
 			object.setDadosContaUsuario(null);

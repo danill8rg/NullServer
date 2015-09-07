@@ -2,7 +2,7 @@ package resources;
 
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -14,17 +14,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import model.Denuncia;
+import model.Mensagem;
 import model.Usuario;
 import model.ViewMensagem;
 
 import org.json.JSONObject;
 
+import service.DenunciaService;
 import service.UsuarioService;
 import service.ViewMensagemService;
+import service.impl.DenunciaServiceImpl;
+import service.impl.MensagemServiceImpl;
 import service.impl.UsuarioServiceImpl;
 import service.impl.ViewMensagemServiceImpl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -46,7 +50,7 @@ public class MensagemResource extends SuperResource{
 	
 	@GET
 	@Path("{id}")
-	public Response getUsuario(@PathParam("id") int id)	{
+	public Response getMensangem(@PathParam("id") int id)	{
 		ViewMensagemService serviceView = new ViewMensagemServiceImpl();
 		try{
 			List<ViewMensagem> listaMensagem = (serviceView.consultarPorDenuncia(id));
@@ -81,69 +85,48 @@ public class MensagemResource extends SuperResource{
 		return array_json.toString();
 	}
 
-	@GET
-	@Path("validaremail/{email}")
-	public Response getValidarEmail(@PathParam("email") String email)	{
-		UsuarioService userService = new  UsuarioServiceImpl();
-		try{
-			boolean result = userService.validarEmail(email);
-			JSONObject json = new JSONObject();
-			json.put("resultado", result);
-			System.out.println(json.toString());
-			return Response.ok(json.toString()).build();	
-		}catch(Exception e){
-			 return Response.serverError().entity(e.getMessage()).build();
-		}
-		
-	}
 
-
-	@GET
-	@Path("all")
-	@Produces(MediaType.APPLICATION_JSON)
-	public	Response getUsuarioList(){
-		
-		service = new UsuarioServiceImpl();
-		try{
-			Usuario user = new Usuario();
-			ArrayList<Usuario> listUsuarios = service.consultarTodos(user);
-			Gson gson = new Gson();
-			String json = gson.toJson(listUsuarios);
-			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
-		}catch(Exception e){
-			 return Response.serverError().entity(e.getMessage()).build();
-		}
-	}
-	
 	@POST
-	@Path("addUser")
+	@Path("addMensagem")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public	Response addUsuario(String jsonRecebido)	{
 		try{
-			service = new UsuarioServiceImpl();
+			service = new MensagemServiceImpl();
 			//Converte String JSON para objeto Java
 			JSONObject dados_array_json = new JSONObject(jsonRecebido);
 			
-			JSONObject dados_array = dados_array_json.getJSONObject("usuario");
-			String nome = dados_array.getString("nome");
-			String email = dados_array.getString("email");
-			String senha = dados_array.getString("senha");
+			String texto = null; int idDenuncia = 1 ; int idUsuario = 1;
+			
+			if( ! dados_array_json.isNull("texto") ){
+				texto = dados_array_json.getString("texto");
+			}
+			
+			if( ! dados_array_json.isNull("idDenuncia") ){
+				idDenuncia = dados_array_json.getInt("idDenuncia");
+			}
+			
+			if( ! dados_array_json.isNull("idUsuario") ){
+				idUsuario = dados_array_json.getInt("idUsuario");
+			}
 			
 			UsuarioService userService = new  UsuarioServiceImpl();
-			if(!userService.validarEmail(email)){
-				return Response.serverError().entity("E-mail já existe!").build();
-			}
+			Usuario user = userService.consultarObjetoId(idUsuario);
 			
-			if(nome == null || email == null || senha == null || nome.equalsIgnoreCase("") || email.equalsIgnoreCase("") || senha.equalsIgnoreCase("")){
-				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
-			}
-			Usuario user = new Usuario(nome,senha,email);
-			//user.setIdUsuario(0);
-			user = (Usuario) service.gravar(user);
+			DenunciaService denunciaService = new DenunciaServiceImpl();
+			Denuncia denuncia = denunciaService.consultarObjetoId(idDenuncia);
 			
-			Gson gson = new Gson();
-			String json = gson.toJson(user);
+			if(denuncia == null) denuncia = new Denuncia(1);
+			if(user == null) user = new Usuario(1);
+			
+			Mensagem mensage = new Mensagem();
+			mensage.setAtivo(true);
+			mensage.setDataAdicionado(new Date());
+			mensage.setDenuncia(denuncia);
+			mensage.setUsuario(user);
+			mensage.setTexto(texto);
+			mensage = (Mensagem) service.gravar(mensage);
+			String json = gerarJsonMensagem(mensage);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -151,7 +134,18 @@ public class MensagemResource extends SuperResource{
 		}
 	}
 
-	
-
+	private String gerarJsonMensagem(Mensagem mensage) {
+		JsonObject array_json = new JsonObject();
+		SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
+        
+        array_json.addProperty("texto", mensage.getTexto());
+        array_json.addProperty("idMensagem", mensage.getIdMensagem());
+        array_json.addProperty("idUsuario", mensage.getUsuario().getIdUsuario());
+        array_json.addProperty("dataAdicionado", sdf1.format(mensage.getDataAdicionado()));
+        array_json.addProperty("idDenuncia", mensage.getDenuncia().getIdDenuncia());
+			
+		return array_json.toString();
+	}
 
 }

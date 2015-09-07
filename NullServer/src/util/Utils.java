@@ -1,12 +1,16 @@
 package util;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -16,23 +20,44 @@ import service.impl.ImagemDenunciaServiceImpl;
 public class Utils {
 	
 	public static String SalvarImagm(byte[] bytes, String formato) throws Exception {
-		String file = null;
+		String file_name = null;
 		ImagemDenunciaService serviceImagem =  new ImagemDenunciaServiceImpl();
 		String nome = serviceImagem.proximoIdImagem();
-		file = nome;
+		file_name = nome;
 		byte[] imgBytes = bytes;
+		File file;
 	    try {
-	    	file =  nome + "." + formato;
-	    	//FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullPointer/WebContent/ImagemDenuncia/" + file);
-	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + file);
-	        fos.write(imgBytes);
-	        FileDescriptor fd = fos.getFD();
-	        fos.flush();
-	        fd.sync();
-	        fos.close();
+	    	
+	    	file_name = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome + "." + formato;
+	    	//file_name = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/" + nome + "." + formato;
+	    	file = new File(file_name);
+	    	    if (!file.exists()) {
+	    	        file.createNewFile();
+	    	    }
+	    	    FileOutputStream fop = new FileOutputStream(file);
+	    	    fop.write(imgBytes);
+	    	    fop.flush();
+	    	    fop.close();	        
+	        
 	        } catch (Exception e) {
 	            throw new Exception(    "Erro ao converter os bytes recebidos para imagem");
 	        }
+	    return compactar(file.getAbsolutePath());
+	}
+
+	private static String compactar(String file) {
+		try{
+			BufferedImage originalImage = ImageIO.read(new File(file));
+		    int width = 1280;
+		    int height = 720;
+		    BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		    resizedImage.getGraphics().drawImage(originalImage, 0, 0, width, height, null);
+		    //ImageIO.write(resizedImage, "jpg", new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));	        
+		    ImageIO.write(resizedImage, "jpg", new File(file));
+		}catch(Exception e){
+			System.out.println("Erro ao converter os bytes recebidos para imagem");
+	        e.getStackTrace();
+		}	    
 	    return file;
 	}
 
@@ -60,7 +85,7 @@ public class Utils {
 
 	public static String SalvarImagemTemp(byte[] arquivo, String nome) {
 		byte[] imgBytes = arquivo;
-	    try {
+	    try {	    	
 	    	//FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome);
 	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome);
 	        fos.write(imgBytes);
@@ -69,8 +94,20 @@ public class Utils {
 	        fd.sync();
 	        fos.close();
 	        //return "http://localhost:8080/NullServer/image/temp/"+ nome;
+	        
+	        BufferedImage originalImage = ImageIO.read(new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));
+	        
+	        //BufferedImage originalImage = ImageIO.read(new File("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome));
+	        int width = 1280;
+	        int height = 720;
+	        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	        resizedImage.getGraphics().drawImage(originalImage, 0, 0, width, height, null);
+	        ImageIO.write(resizedImage, "jpg", new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));	        
+	        //ImageIO.write(resizedImage, "jpg", new File("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome));	        
 	        return "http://rcisistemas.minivps.info:8080/NullServer/image/temp/" + nome;
-	        } catch (Exception e) {
+	        //return "http://localhost:8080/NullServer/image/temp/" + nome;
+	            
+	    } catch (Exception e) {
 	           System.out.println("Erro ao converter os bytes recebidos para imagem");
 	           e.getStackTrace();
 	        }

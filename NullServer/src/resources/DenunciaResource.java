@@ -1,6 +1,7 @@
 package resources;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -163,21 +164,16 @@ public class DenunciaResource extends SuperResource{
 				byte[] arquivo = null;
 				arquivo = Base64.decodeBase64(imagem.toString());
 				String caminhoImagem = Utils.SalvarImagm(arquivo, formatoImage);
-				System.out.println("salvou imagem na pasta...");
+				
+				File file_imagem = new File(caminhoImagem);
+				
 				ImagemDenuncia imgDenuncia = new ImagemDenuncia();
-				System.out.println("criou objeto");
 				imgDenuncia.setAtivo(true);
-				System.out.println("setou true");
-				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + caminhoImagem);
-				System.out.println("setou caminho = " + "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + caminhoImagem );
+				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
 				imgDenuncia.setDenuncia(denuncia);
-				System.out.println("Setou Denuncia = " +  denuncia.getIdDenuncia() );
 				imgDenuncia.setDescricao("...fazer posteriomente...");
-				System.out.println("Setou descricao "  );
 				service = new ImagemDenunciaServiceImpl();
-				System.out.println("criou o service "  );
 				imgDenuncia = (ImagemDenuncia) service.gravar(imgDenuncia);
-				System.out.println("gravou imagem no banco... "  );
 			}
 			String json = gerarJson(denuncia);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
@@ -364,6 +360,126 @@ public class DenunciaResource extends SuperResource{
 		}catch(Exception e){
 			e.printStackTrace();
 			 return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+	
+	@POST
+	@Path("adddenuncia_app_42")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public	Response addDenunciaAPP(String jsonRecebido)	{
+		try{
+			//Converte String JSON para objeto Java
+			JSONObject dados_array_json = new JSONObject(jsonRecebido);
+			String latitude = null; String longitude = null; String tipoDenuncia = null;
+			String observacao = null; int idUsuario = 0;
+			JSONArray array = new JSONArray();
+			if( ! dados_array_json.isNull("latitude")){
+				latitude = dados_array_json.getString("latitude");
+			}
+			if( ! dados_array_json.isNull("longitude")){
+				longitude = dados_array_json.getString("longitude");
+			}
+			if( ! dados_array_json.isNull("tipoDenuncia")){
+				tipoDenuncia = dados_array_json.getString("tipoDenuncia");
+			}
+			if( ! dados_array_json.isNull("observacao")){
+				observacao = dados_array_json.getString("observacao");
+			}
+			if( ! dados_array_json.isNull("idUsuario")){
+				idUsuario = dados_array_json.getInt("idUsuario");
+			}
+			if( ! dados_array_json.isNull("arrayImagem")){
+				array = dados_array_json.getJSONArray("arrayImagem");
+			}	
+			
+			if(latitude == null || longitude == null || latitude.equalsIgnoreCase("") || longitude.equalsIgnoreCase("")){
+				return Response.ok("", MediaType.APPLICATION_JSON).build();
+			}
+			
+			LocalDenuncia local = new LocalDenuncia(latitude, longitude);
+			service = new LocalDenunciaServiceImpl();
+			local = (LocalDenuncia) service.gravar(local);
+
+			TipoDenunciaService serviceTipoDenucia = new TipoDenunciaServiceImpl();
+			TipoDenuncia tipo = serviceTipoDenucia.consultarDescricao(tipoDenuncia);
+			
+			if(tipo == null || tipo.getIdTipoDenuncia()  == null || tipo.getIdTipoDenuncia() == 0 ) {
+				tipo.setIdTipoDenuncia(1);
+			}
+			
+			if(observacao != null && observacao.length() > 300 ){
+				observacao = observacao.substring(0, 298);
+			}
+			
+			service = new UsuarioServiceImpl();
+			Usuario user ;
+			try{
+				if(idUsuario != 0){
+					user = (Usuario) service.consultarObjetoId(idUsuario);
+				}else{
+					user = (Usuario) service.consultarObjetoId(1);
+				}
+			} catch(Exception e){
+				user = (Usuario) service.consultarObjetoId(1);
+			}
+			
+			if(user == null || user.getIdUsuario() == null || user.getIdUsuario() == 0 ){
+				user = (Usuario) service.consultarObjetoId(1);
+			}
+			
+			service = new DenunciaServiceImpl();
+			Denuncia denuncia = new Denuncia();
+			
+			
+			if(! dados_array_json.isNull("dataAconteceu") ){
+				denuncia.setDataAconteceu(new Date( dados_array_json.getLong("dataAconteceu")));
+			}else{
+				denuncia.setDataAconteceu(new Date());
+			}
+			denuncia.setAtivo(true);
+			denuncia.setLocalDenuncia(local);
+			denuncia.setTipoDenuncia(tipo);
+			denuncia.setObservacao(observacao);
+			denuncia.setUsuario(user);			
+			denuncia = (Denuncia) service.gravar(denuncia);
+			System.out.println("gravou denuncia...");
+			for(int cont = 0; cont < array.length() ; cont++){
+				String imagem = null; String formatoImage = null;
+				JSONObject jsonObject = array.getJSONObject(cont);
+				if(!jsonObject.isNull("imagem")){
+					imagem = jsonObject.getString("imagem");
+				}
+				if(!jsonObject.isNull("formatoImage")){
+					formatoImage = jsonObject.getString("formatoImage");
+				}
+				if(imagem != null && formatoImage != null){
+					byte[] arquivo = null;
+					arquivo = Base64.decodeBase64(imagem.toString());
+					String caminhoImagem = Utils.SalvarImagm(arquivo, formatoImage);
+				
+					File file_imagem = new File(caminhoImagem);
+					
+					ImagemDenuncia imgDenuncia = new ImagemDenuncia();
+					imgDenuncia.setAtivo(true);
+					imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
+					imgDenuncia.setDenuncia(denuncia);
+					imgDenuncia.setDescricao("...fazer posteriomente...");
+					service = new ImagemDenunciaServiceImpl();
+					imgDenuncia = (ImagemDenuncia) service.gravar(imgDenuncia);
+				}
+			}
+			dados_array_json.put("idDenuncia", denuncia.getIdDenuncia());
+			dados_array_json.put("dataAconteceu", denuncia.getDataAconteceu().getTime());
+			if( ! dados_array_json.isNull("arrayImagem")){
+				dados_array_json.remove("arrayImagem");
+			}	
+			//String json = gerarJson(denuncia);
+			String json = dados_array_json.toString();
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			e.printStackTrace();
+			return Response.ok("", MediaType.APPLICATION_JSON).build();
 		}
 	}
 }

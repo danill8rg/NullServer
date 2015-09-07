@@ -77,7 +77,7 @@ public Response uploadFile(File image) throws IOException {
 		InputStream inputStream = is;
 		byte[] bytes = IOUtils.toByteArray(inputStream);
 		// constructs upload file path
-		//file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/"
+		//file_path = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/temp/" + fileNameAux;
 		file_path = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/temp/" + fileNameAux;
 		writeFile(bytes, file_path);
 		System.out.println("Success !!!!!");
@@ -103,6 +103,14 @@ private void writeFile(byte[] content, String filename) throws IOException
     fop.write(content);
     fop.flush();
     fop.close();
+    
+    BufferedImage originalImage = ImageIO.read(new File(filename));
+    int width = 1280;
+    int height = 720;
+    BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    resizedImage.getGraphics().drawImage(originalImage, 0, 0, width, height, null);
+    //ImageIO.write(resizedImage, "jpg", new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));	        
+    ImageIO.write(resizedImage, "jpg", new File(filename));	
 }
 
 

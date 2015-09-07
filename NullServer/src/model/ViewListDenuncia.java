@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ViewListDenuncia.findByBairro", query = "SELECT v FROM ViewListDenuncia v WHERE v.bairro = :bairro"),
     @NamedQuery(name = "ViewListDenuncia.findByCidade", query = "SELECT v FROM ViewListDenuncia v WHERE v.cidade = :cidade"),
     @NamedQuery(name = "ViewListDenuncia.findByDataAconteceu", query = "SELECT v FROM ViewListDenuncia v WHERE v.dataAconteceu = :dataAconteceu"),
-    @NamedQuery(name = "ViewListDenuncia.findByCaminho", query = "SELECT v FROM ViewListDenuncia v WHERE v.caminho = :caminho")})
+    @NamedQuery(name = "ViewListDenuncia.findByCaminho", query = "SELECT v FROM ViewListDenuncia v WHERE v.caminho = :caminho"),
+    @NamedQuery(name = "ViewListDenuncia.findByIdUsuario", query = "SELECT v FROM ViewListDenuncia v WHERE v.idUsuario = :idUsuario")})
 public class ViewListDenuncia implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,6 +48,8 @@ public class ViewListDenuncia implements Serializable {
     private Date dataAconteceu;
     @Column(name = "caminho")
     private String caminho;
+    @Column(name = "id_usuario")
+    private Integer idUsuario;
 
     public ViewListDenuncia() {
     }
@@ -105,6 +108,14 @@ public class ViewListDenuncia implements Serializable {
 
     public void setCaminho(String caminho) {
         this.caminho = caminho;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
     }
     
 }

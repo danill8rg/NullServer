@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import model.ViewListDenuncia;
 import service.ViewListDenunciaService;
+import dao.ViewListDenunciaDao;
 import dao.impl.ViewListDenunciaDaoImpl;
 
 public class ViewListDenunciaServiceImpl extends SuperServiceImpl<ViewListDenuncia, Integer> implements ViewListDenunciaService {
@@ -55,5 +56,11 @@ public class ViewListDenunciaServiceImpl extends SuperServiceImpl<ViewListDenunc
 			System.out.println("Erro Mensgem :" + e.getMessage());
 			return new ViewListDenuncia();
 		}
+	}
+
+	@Override
+	public ArrayList<ViewListDenuncia> consultarPorUsuario(int id) {
+		ViewListDenunciaDao daoView = new ViewListDenunciaDaoImpl();
+		return daoView.consultarPorUsuario(id);
 	}
 }

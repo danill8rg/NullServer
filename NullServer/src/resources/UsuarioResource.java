@@ -1,7 +1,9 @@
 package resources;
 
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,12 +14,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import model.DadosContaUsuario;
+import model.ImagemDenuncia;
 import model.Usuario;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONObject;
 
+import service.DadosContaUsuarioService;
 import service.UsuarioService;
+import service.impl.DadosContaUsuarioServiceImpl;
+import service.impl.ImagemDenunciaServiceImpl;
 import service.impl.UsuarioServiceImpl;
+import util.Utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -235,6 +244,7 @@ public class UsuarioResource extends SuperResource{
 			//Converte String JSON para objeto Java
 			JSONObject dados_array = new JSONObject(jsonRecebido);
 			String nome = null; String email = null; String senha = null;
+			String imagem_decode =null; String formato = null;
 			if( ! dados_array.isNull("nome")){
 				nome = dados_array.getString("nome");
 			}
@@ -243,6 +253,14 @@ public class UsuarioResource extends SuperResource{
 			}
 			if( ! dados_array.isNull("senha")){
 				senha = dados_array.getString("senha");
+			}
+			
+			if( ! dados_array.isNull("imagem")){
+				imagem_decode = dados_array.getString("imagem");
+			}
+			
+			if( ! dados_array.isNull("formatoImage")){
+				formato = dados_array.getString("formatoImage");
 			}
 						
 			UsuarioService userService = new  UsuarioServiceImpl();
@@ -266,6 +284,31 @@ public class UsuarioResource extends SuperResource{
 			//user.setIdUsuario(0);
 			user = (Usuario) userService.gravar(user);
 			String json = "" + user.getIdUsuario();
+			
+			try{
+				if(imagem_decode != null && formato != null){
+					DadosContaUsuarioService contaservice = new DadosContaUsuarioServiceImpl();
+					DadosContaUsuario contaUsuario = contaservice.consultarObjetoId(user.getIdUsuario());
+					
+					byte[] arquivo = null;
+					arquivo = Base64.decodeBase64(imagem_decode.toString());
+					String caminhoImagem = Utils.SalvarImagm(arquivo, formato);
+				
+					File file_imagem = new File(caminhoImagem);
+					
+					contaUsuario.setCaminhoImagem("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
+								
+					contaUsuario.setDataNascimento(new Date());
+					contaUsuario.setNome(user.getNome());
+					contaUsuario = contaservice.atualizar(contaUsuario);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				System.out.println("erro ao salvar imagem do Usuario");
+			}
+			
+			
+			
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
 			e.printStackTrace();

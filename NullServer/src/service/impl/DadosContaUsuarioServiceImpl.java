@@ -38,7 +38,8 @@ public class DadosContaUsuarioServiceImpl extends SuperServiceImpl<DadosContaUsu
 		}catch(Exception e){
 			System.out.println("Erro ao atualizar DadosContaUsuario.");
 			System.out.println("Erro :" + e);
-			System.out.println("Erro Mensgem :" + e.getMessage());
+			System.out.println("Erro Mensagem :" + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}		
 	}

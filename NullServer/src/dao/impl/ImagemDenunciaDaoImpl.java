@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import model.ImagemDenuncia;
 import model.Usuario;
 import dao.ImagemDenunciaDao;
@@ -20,13 +23,38 @@ public class ImagemDenunciaDaoImpl extends SuperDaoImpl<ImagemDenuncia, Integer>
 
 	@Override
 	public String proximoIdImagem() {
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		List<ImagemDenuncia> lista  = super.consultarPorNamedQueryEParametros("ImagemDenuncia.findUltimo", parameters);
-		if(lista != null){
-			ImagemDenuncia imagem = lista.get(0);
-			return "" + (imagem.getIdImagemDenuncia() + 1);
+		int result = 0;
+		
+		EntityManager entityManager = JpaUtil.getEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			
+//			Query query = entityManager.createNativeQuery("SELECT id_imagem_denuncia FROM tb_imagem_denuncia order by id_imagem_denuncia desc limit 1");
+//			result = (int)query.getSingleResult();
+			
+			Query query = entityManager.createNamedQuery("ImagemDenuncia.findUltimo");
+			
+			int aux = query.getMaxResults();
+            List<ImagemDenuncia> lista = (List<ImagemDenuncia>) query.setMaxResults(1).getResultList();
+            if(lista.isEmpty()){
+            	result = 0;
+            }else{
+            	ImagemDenuncia image = lista.get(0);
+            	result = image.getIdImagemDenuncia();
+            }
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(entityManager.isOpen()){
+				entityManager.getTransaction().rollback();
+			}
+		} finally {
+			if(entityManager.isOpen()){
+				entityManager.close();
+			}
+			return ( "" + (result + 1));
 		}
-		return "1";
 	}
 
 	@Override
