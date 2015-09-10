@@ -2,6 +2,7 @@ package service.impl;
 
 import java.util.ArrayList;
 
+import dao.ViewMapDenunciaDao;
 import dao.impl.BairroDaoImpl;
 import dao.impl.ViewMapDenunciaDaoImpl;
 import model.Bairro;
@@ -57,5 +58,15 @@ public class ViewMapDenunciaServiceImpl extends SuperServiceImpl<ViewMapDenuncia
 			System.out.println("Erro Mensgem :" + e.getMessage());
 			return new ViewMapDenuncia();
 		}
+	}
+
+	@Override
+	public ArrayList<ViewMapDenuncia> consultarTodosWeb() {
+		ViewMapDenunciaDao daoView = new ViewMapDenunciaDaoImpl();
+		ArrayList<ViewMapDenuncia> lista = new ArrayList<ViewMapDenuncia>(daoView.consultarTodosWeb());
+		if(lista != null){
+			return lista;
+		}
+		return new ArrayList<ViewMapDenuncia>();
 	}
 }

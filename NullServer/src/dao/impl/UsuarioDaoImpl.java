@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import model.ImagemDenuncia;
 import model.Usuario;
 import dao.UsuarioDao;
 
@@ -64,4 +68,36 @@ public class UsuarioDaoImpl extends SuperDaoImpl<Usuario, Integer> implements Us
 		return listUser.get(0);
 	}
 
+	@Override
+	public String proximoIdUsuario() {
+int result = 0;
+		
+		EntityManager entityManager = JpaUtil.getEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			
+			Query query = entityManager.createNamedQuery("Usuario.findUltimo");
+			
+			int aux = query.getMaxResults();
+            List<Usuario> lista = (List<Usuario>) query.setMaxResults(1).getResultList();
+            if(lista.isEmpty()){
+            	result = 0;
+            }else{
+            	Usuario image = lista.get(0);
+            	result = image.getIdUsuario();
+            }
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(entityManager.isOpen()){
+				entityManager.getTransaction().rollback();
+			}
+		} finally {
+			if(entityManager.isOpen()){
+				entityManager.close();
+			}
+			return ( "" + (result + 1));
+		}
+	}
 }

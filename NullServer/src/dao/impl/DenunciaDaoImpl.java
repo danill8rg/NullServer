@@ -1,5 +1,6 @@
 package dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import model.Denuncia;
 import model.TipoDenuncia;
+import model.Usuario;
 import dao.DenunciaDao;
 
 
@@ -38,6 +40,16 @@ public class DenunciaDaoImpl extends SuperDaoImpl<Denuncia, Integer> implements 
         parameters.put("ativo", true);   
         return super.consultarPorNamedQueryEParametros("SELECT d FROM Denuncia d WHERE d.ativo = :ativo", parameters);
 		
+	}
+
+	@Override
+	public List<Denuncia> consultarParaMapa() {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+        List<Denuncia> listaDenuncias = super.consultarPorNamedQueryEParametros("Denuncia.findAll", parameters);
+        if(listaDenuncias != null){
+        	return listaDenuncias;
+        }
+        return new ArrayList<Denuncia>();
 	}
 
 }

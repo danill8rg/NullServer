@@ -58,7 +58,7 @@ public class ViewListDenunciaResource extends SuperResource{
         sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
         
 		JsonArray arrayJson = new JsonArray();		
-		for(int i = 0; i < listaDenuncias.size() && i < 10 ; i++ ){
+		for(int i = 0; i < listaDenuncias.size() && i < 15 ; i++ ){
 			JsonObject json = new JsonObject();
 			ViewListDenuncia view = listaDenuncias.get(i);
 			if(view.getBairro() != null){

@@ -155,4 +155,10 @@ public class UsuarioServiceImpl extends SuperServiceImpl<Usuario, Integer> imple
 		}
 		return false;
 	}
+
+	@Override
+	public String proximoIdUsuario() {
+		UsuarioDao userDao = new UsuarioDaoImpl();
+		return userDao.proximoIdUsuario();
+	}
 }

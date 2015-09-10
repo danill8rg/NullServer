@@ -1,5 +1,8 @@
 package util;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,7 +18,9 @@ import javax.imageio.ImageIO;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import service.ImagemDenunciaService;
+import service.UsuarioService;
 import service.impl.ImagemDenunciaServiceImpl;
+import service.impl.UsuarioServiceImpl;
 
 public class Utils {
 	
@@ -113,5 +118,69 @@ public class Utils {
 	        }
 		return null;
 	}
+	
+	public static String SalvarImagemArredondando(byte[] bytes, String formato) throws Exception {
+		String file_name = null;
+		UsuarioService serviceUsuario =  new UsuarioServiceImpl();
+		String nome = serviceUsuario.proximoIdUsuario();
+		file_name = nome;
+		byte[] imgBytes = bytes;
+		File file;
+	    try {
+	    	
+	    	file_name = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/u" + nome + "." + "png";
+	    	//file_name = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/" + nome + "." + formato;
+	    	file = new File(file_name);
+	    	    if (!file.exists()) {
+	    	        file.createNewFile();
+	    	    }
+	    	    FileOutputStream fop = new FileOutputStream(file);
+	    	    fop.write(imgBytes);
+	    	    fop.flush();
+	    	    fop.close();	        
+	        
+	        } catch (Exception e) {
+	            throw new Exception(    "Erro ao converter os bytes recebidos para imagem");
+	        }
+	    return compactarArredondando(file.getAbsolutePath());
+	}
 
+	private static String compactarArredondando(String file) {
+		try{
+		    BufferedImage originalImage = ImageIO.read(new File(file));
+	        int width = 1280;
+	        int height = 1280;
+	        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	        resizedImage.getGraphics().drawImage(originalImage, 0, 0, width, height, null);
+	        ImageIO.write(resizedImage, "jpg", new File(file));
+	        
+	        BufferedImage originalImg=ImageIO.read(new File(file));
+	        
+
+	        BufferedImage bim=new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+	        
+
+	        Graphics2D g2=bim.createGraphics();
+	        
+
+	        RenderingHints qualityHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+	        qualityHints.put(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+	        g2.setRenderingHints(qualityHints);
+	        
+	        g2.setClip(new RoundRectangle2D.Double(0,0,width,height,width,height));
+	        
+	        g2.drawImage(originalImg,0,0,null);
+	        
+	        g2.dispose();
+	        
+	        // Write to a new image file
+	        ImageIO.write(bim,"PNG",new File(file));
+	        System.out.println("acabou....");
+	        
+		}catch(Exception e){
+			System.out.println("Erro ao converter os bytes recebidos para imagem");
+	        e.getStackTrace();
+		}	    
+	    return file;
+	}
 }

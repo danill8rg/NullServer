@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import model.ViewGraficoDenuncia;
 import model.ViewMapDenuncia;
 import service.ViewGraficoDenunciaService;
+import service.ViewMapDenunciaService;
 import service.impl.ViewGraficoDenunciaServiceImpl;
 import service.impl.ViewMapDenunciaServiceImpl;
 
@@ -135,6 +136,23 @@ public class ViewMapDenunciaResource extends SuperResource{
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
+	}
+	
+	@GET
+	@Path("/web")
+	public Response getViewALL(@PathParam("id") int id)	{
+
+		ViewMapDenunciaService serviceView  = new ViewMapDenunciaServiceImpl();
+		try{
+			ViewMapDenuncia view = new ViewMapDenuncia();
+			ArrayList<ViewMapDenuncia> list = serviceView.consultarTodosWeb();
+			Gson gson = new Gson();
+			String json = gson.toJson(list);
+			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
+		}catch(Exception e){
+			 return Response.serverError().entity(e.getMessage()).build();
+		}
+		
 	}
 
 }

@@ -9,4 +9,6 @@ public interface UsuarioService extends SuperService<Usuario, Integer> {
 	public boolean validarEmail(String email) throws Exception;
 
 	public boolean relebrarEmail(String email);
+
+	public String proximoIdUsuario();
 }

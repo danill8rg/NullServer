@@ -12,4 +12,6 @@ public interface DenunciaDao extends SuperDao<Denuncia, Integer> {
 	
 	public List<Denuncia> consultarTipoDenuncia(TipoDenuncia tipoDenuncia, boolean Situacao);
 
+	public List<Denuncia> consultarParaMapa();
+
 }

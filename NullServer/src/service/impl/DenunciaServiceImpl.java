@@ -1,9 +1,11 @@
 package service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Denuncia;
 import service.DenunciaService;
+import dao.DenunciaDao;
 import dao.impl.DenunciaDaoImpl;
 
 public class DenunciaServiceImpl extends SuperServiceImpl<Denuncia, Integer> implements DenunciaService {
@@ -61,5 +63,11 @@ public class DenunciaServiceImpl extends SuperServiceImpl<Denuncia, Integer> imp
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<Denuncia> consultarParaMapa() {
+		DenunciaDao daoDenuncia = new DenunciaDaoImpl();
+		return daoDenuncia.consultarParaMapa();
 	}
 }

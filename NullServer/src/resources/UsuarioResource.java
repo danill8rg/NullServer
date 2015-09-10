@@ -292,7 +292,7 @@ public class UsuarioResource extends SuperResource{
 					
 					byte[] arquivo = null;
 					arquivo = Base64.decodeBase64(imagem_decode.toString());
-					String caminhoImagem = Utils.SalvarImagm(arquivo, formato);
+					String caminhoImagem = Utils.SalvarImagemArredondando(arquivo, formato);
 				
 					File file_imagem = new File(caminhoImagem);
 					
@@ -306,8 +306,6 @@ public class UsuarioResource extends SuperResource{
 				e.printStackTrace();
 				System.out.println("erro ao salvar imagem do Usuario");
 			}
-			
-			
 			
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
