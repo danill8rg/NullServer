@@ -127,7 +127,7 @@ public class ImagemDenunciaServiceImpl extends SuperServiceImpl<ImagemDenuncia, 
 		String result = imageDao.caminhoPrimeiraImagem(idDenuncia);
 		
 		if(result == null ){
-			result = "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/logo/logo.png";
+			result = "http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/logo/logo.png";
 			//result = "http://localhost:8080/NullPointer/ImagemDenuncia/logo/logo.png";
 		}
 		return result;

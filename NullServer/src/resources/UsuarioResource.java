@@ -296,7 +296,7 @@ public class UsuarioResource extends SuperResource{
 				
 					File file_imagem = new File(caminhoImagem);
 					
-					contaUsuario.setCaminhoImagem("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
+					contaUsuario.setCaminhoImagem("http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/" + file_imagem.getName());
 								
 					contaUsuario.setDataNascimento(new Date());
 					contaUsuario.setNome(user.getNome());

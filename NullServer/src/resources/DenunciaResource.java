@@ -169,7 +169,7 @@ public class DenunciaResource extends SuperResource{
 				
 				ImagemDenuncia imgDenuncia = new ImagemDenuncia();
 				imgDenuncia.setAtivo(true);
-				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
+				imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/" + file_imagem.getName());
 				imgDenuncia.setDenuncia(denuncia);
 				imgDenuncia.setDescricao("...fazer posteriomente...");
 				service = new ImagemDenunciaServiceImpl();
@@ -462,7 +462,7 @@ public class DenunciaResource extends SuperResource{
 					
 					ImagemDenuncia imgDenuncia = new ImagemDenuncia();
 					imgDenuncia.setAtivo(true);
-					imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/" + file_imagem.getName());
+					imgDenuncia.setCaminho("http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/" + file_imagem.getName());
 					imgDenuncia.setDenuncia(denuncia);
 					imgDenuncia.setDescricao("...fazer posteriomente...");
 					service = new ImagemDenunciaServiceImpl();

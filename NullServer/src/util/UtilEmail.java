@@ -20,7 +20,7 @@ public class UtilEmail {
 	      email.setSSL(true);  
 	      email.addTo(para); //pode ser qualquer email  
 	      email.setFrom("danill8rg@gmail.com"); //será passado o email que você fará a autenticação 
-	      email.setSubject("NullPointer lembrar senha");  
+	      email.setSubject("Conexão Cidadã lembrar senha");  
 	      email.setMsg(mensagem);  
 	      email.send();  
 	      } catch (EmailException e) {  

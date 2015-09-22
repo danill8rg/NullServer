@@ -148,7 +148,7 @@ public class UsuarioServiceImpl extends SuperServiceImpl<Usuario, Integer> imple
 		Usuario user = userDao.consultarPorEmail(email);
 		if(user != null){
 			String mensagem = "";
-			mensagem = mensagem + "Muito obrigado por usar o NullPointer.";
+			mensagem = mensagem + "Muito obrigado por usar o Conexão Cidadã.";
 			mensagem = mensagem + "Sua senha é : " + user.getSenha();
 			UtilEmail.mandaEmail(email, mensagem);
 			return true;

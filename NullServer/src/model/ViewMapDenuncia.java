@@ -34,8 +34,7 @@ public class ViewMapDenuncia implements Serializable {
     @Column(name = "id_denuncia")
     private Integer idDenuncia;
     @Column(name = "data_aconteceu")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataAconteceu;
+    private String dataAconteceu;
     @Column(name = "observacao")
     private String observacao;
     @Column(name = "latitude")
@@ -50,7 +49,7 @@ public class ViewMapDenuncia implements Serializable {
     public ViewMapDenuncia() {
     }
     
-    public ViewMapDenuncia(Integer idDenuncia, Date dataAconteceu, String observacao, String latitude, String longitude,
+    public ViewMapDenuncia(Integer idDenuncia, String dataAconteceu, String observacao, String latitude, String longitude,
 			String tipoDenuncia, String nomeUsuario) {
 		super();
 		this.idDenuncia = idDenuncia;
@@ -72,11 +71,11 @@ public class ViewMapDenuncia implements Serializable {
         this.idDenuncia = idDenuncia;
     }
 
-    public Date getDataAconteceu() {
+    public String getDataAconteceu() {
         return dataAconteceu;
     }
 
-    public void setDataAconteceu(Date dataAconteceu) {
+    public void setDataAconteceu(String dataAconteceu) {
         this.dataAconteceu = dataAconteceu;
     }
 

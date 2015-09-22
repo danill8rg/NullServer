@@ -74,7 +74,7 @@ public class ViewListDenunciaResource extends SuperResource{
 			if(view.getCaminho() != null){
 				json.addProperty("caminhoImagem", view.getCaminho());
 			}else{
-				json.addProperty("caminhoImagem", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/semImagem.png");
+				json.addProperty("caminhoImagem", "http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/semImagem.png");
 			}
 			json.addProperty("idDenuncia", view.getIdDenuncia());
 			json.addProperty("dataAconteceu", sdf1.format(view.getDataAconteceu()));
@@ -123,7 +123,7 @@ public class ViewListDenunciaResource extends SuperResource{
 			if(view.getCaminho() != null){
 				json.addProperty("caminhoImagem", view.getCaminho());
 			}else{
-				json.addProperty("caminhoImagem", "http://rcisistemas.minivps.info:8080/NullPointer/ImagemDenuncia/semImagem.png");
+				json.addProperty("caminhoImagem", "http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/semImagem.png");
 			}
 			json.addProperty("idDenuncia", view.getIdDenuncia());
 			json.addProperty("dataAconteceu", sdf1.format(view.getDataAconteceu()));

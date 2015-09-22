@@ -229,7 +229,7 @@ public class ViewDetalheDenunciaResource extends SuperResource{
 				json_mensagem.addProperty("texto", mensagem.getTexto());
 				json_mensagem.addProperty("idDenuncia", mensagem.getIdDenuncia());
 				json_mensagem.addProperty("idMensagem", mensagem.getIdMensagem());
-				json_mensagem.addProperty("dataAdicionado", sdf1.format(mensagem.getDataAdicionado()));
+				json_mensagem.addProperty("dataAdicionado", mensagem.getDataAdicionado());
 				arrayMensagem.add(json_mensagem);
 			}
 			

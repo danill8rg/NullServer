@@ -1,6 +1,7 @@
 package resources;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.ws.rs.GET;
@@ -148,11 +149,31 @@ public class ViewMapDenunciaResource extends SuperResource{
 			ArrayList<ViewMapDenuncia> list = serviceView.consultarTodosWeb();
 			Gson gson = new Gson();
 			String json = gson.toJson(list);
+			System.out.println(json);
 			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
 		}catch(Exception e){
 			 return Response.serverError().entity(e.getMessage()).build();
 		}
 		
+	}
+
+
+	private String gerarJson(ArrayList<ViewMapDenuncia> list) {
+		JsonArray array = new JsonArray();
+		SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss");
+        for(ViewMapDenuncia view : list){
+        	JsonObject obj = new JsonObject();
+        	obj.addProperty("dataAconteceu", sdf1.format(view.getDataAconteceu()));
+        	obj.addProperty("idDenuncia", view.getIdDenuncia());
+        	obj.addProperty("observacao", view.getObservacao());
+        	obj.addProperty("latitude", view.getLatitude());
+        	obj.addProperty("longitude", view.getLongitude());
+        	obj.addProperty("tipoDenuncia", view.getTipoDenuncia());
+        	obj.addProperty("nomeUsuario", view.getNomeUsuario());
+        	array.add(obj);
+        }		
+		return array.toString();
 	}
 
 }

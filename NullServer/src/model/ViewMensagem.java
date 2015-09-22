@@ -37,8 +37,7 @@ public class ViewMensagem implements Serializable {
     @Column(name = "nome_usuario")
     private String nomeUsuario;
     @Column(name = "data_adicionado")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataAdicionado;
+    private String dataAdicionado;
     @Column(name = "texto")
     private String texto;
     @Column(name = "caminho_imagem")
@@ -71,11 +70,11 @@ public class ViewMensagem implements Serializable {
         this.nomeUsuario = nomeUsuario;
     }
 
-    public Date getDataAdicionado() {
+    public String getDataAdicionado() {
         return dataAdicionado;
     }
 
-    public void setDataAdicionado(Date dataAdicionado) {
+    public void setDataAdicionado(String dataAdicionado) {
         this.dataAdicionado = dataAdicionado;
     }
 

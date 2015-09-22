@@ -33,7 +33,7 @@ public class Utils {
 		File file;
 	    try {
 	    	
-	    	file_name = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome + "." + formato;
+	    	file_name = "/var/tomcat7/webapps/conexaocidada/ImagemDenuncia/" + nome + "." + formato;
 	    	//file_name = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/" + nome + "." + formato;
 	    	file = new File(file_name);
 	    	    if (!file.exists()) {
@@ -92,7 +92,7 @@ public class Utils {
 		byte[] imgBytes = arquivo;
 	    try {	    	
 	    	//FileOutputStream fos = new FileOutputStream("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome);
-	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome);
+	        FileOutputStream fos = new FileOutputStream("/var/tomcat7/webapps/conexaocidada/ImagemDenuncia/" + nome);
 	        fos.write(imgBytes);
 	        FileDescriptor fd = fos.getFD();
 	        fos.flush();
@@ -100,16 +100,16 @@ public class Utils {
 	        fos.close();
 	        //return "http://localhost:8080/NullServer/image/temp/"+ nome;
 	        
-	        BufferedImage originalImage = ImageIO.read(new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));
+	        BufferedImage originalImage = ImageIO.read(new File("/var/tomcat7/webapps/conexaocidada/ImagemDenuncia/" + nome));
 	        
 	        //BufferedImage originalImage = ImageIO.read(new File("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome));
 	        int width = 1280;
 	        int height = 720;
 	        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	        resizedImage.getGraphics().drawImage(originalImage, 0, 0, width, height, null);
-	        ImageIO.write(resizedImage, "jpg", new File("/var/tomcat7/webapps/NullPointer/ImagemDenuncia/" + nome));	        
+	        ImageIO.write(resizedImage, "jpg", new File("/var/tomcat7/webapps/conexaocidada/ImagemDenuncia/" + nome));	        
 	        //ImageIO.write(resizedImage, "jpg", new File("C:/Users/danillo/git/NullServer/NullServer/WebContent/image/temp/" + nome));	        
-	        return "http://rcisistemas.minivps.info:8080/NullServer/image/temp/" + nome;
+	        return "http://rcisistemas.minivps.info:8080/conexaocidada/ImagemDenuncia/" + nome;
 	        //return "http://localhost:8080/NullServer/image/temp/" + nome;
 	            
 	    } catch (Exception e) {
@@ -128,7 +128,7 @@ public class Utils {
 		File file;
 	    try {
 	    	
-	    	file_name = "/var/tomcat7/webapps/NullPointer/ImagemDenuncia/u" + nome + "." + "png";
+	    	file_name = "/var/tomcat7/webapps/conexaocidada/ImagemDenuncia/u" + nome + "." + "png";
 	    	//file_name = "C:/Users/Notebook/git/NullPointer2/WebContent/ImagemDenuncia/" + nome + "." + formato;
 	    	file = new File(file_name);
 	    	    if (!file.exists()) {

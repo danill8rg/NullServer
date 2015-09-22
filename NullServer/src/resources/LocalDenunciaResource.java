@@ -1,6 +1,10 @@
 package resources;
 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
@@ -15,6 +19,7 @@ import javax.ws.rs.core.Response;
 import model.LocalDenuncia;
 import model.Usuario;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import service.UsuarioService;
@@ -22,6 +27,7 @@ import service.impl.LocalDenunciaServiceImpl;
 import service.impl.UsuarioServiceImpl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -40,92 +46,119 @@ import com.google.gson.Gson;
 public class LocalDenunciaResource extends SuperResource{
 	
 	@GET
-	@Path("{id}/{log}")
-	public Response getUsuario(@PathParam("id") String id, @PathParam("log") String log)	{
+	@Path("{lat}/{log}")
+	public Response getUsuario(@PathParam("lat") String lat, @PathParam("log") String log)	{
 		setService(new LocalDenunciaServiceImpl());
 		try{
-			LocalDenuncia local = new LocalDenuncia();
-			local.setLatitude(id);
-			local.setLongitude(log);
-			local = (LocalDenuncia) getService().gravar(local);
-			return Response.ok("ok").build();	
-		}catch(Exception e){
-			 return Response.serverError().entity(e.getMessage()).build();
-		}
-		
-	}
-	
-	@GET
-	@Path("validaremail/{email}")
-	public Response getValidarEmail(@PathParam("email") String email)	{
-		UsuarioService userService = new  UsuarioServiceImpl();
-		try{
-			boolean result = userService.validarEmail(email);
-			JSONObject json = new JSONObject();
-			json.put("resultado", result);
-			System.out.println(json.toString());
-			return Response.ok(json.toString()).build();	
-		}catch(Exception e){
-			 return Response.serverError().entity(e.getMessage()).build();
-		}
-		
-	}
-
-
-	@GET
-	@Path("all")
-	@Produces(MediaType.APPLICATION_JSON)
-	public	Response getUsuarioList(){
-		
-		service = new UsuarioServiceImpl();
-		try{
-			Usuario user = new Usuario();
-			ArrayList<Usuario> listUsuarios = service.consultarTodos(user);
-			Gson gson = new Gson();
-			String json = gson.toJson(listUsuarios);
-			return Response.ok(json, MediaType.APPLICATION_JSON).build();	
-		}catch(Exception e){
-			 return Response.serverError().entity(e.getMessage()).build();
-		}
-	}
-	
-	@POST
-	@Path("addUser")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public	Response addUsuario(String jsonRecebido)	{
-		try{
-			service = new UsuarioServiceImpl();
-			//Converte String JSON para objeto Java
-			JSONObject dados_array_json = new JSONObject(jsonRecebido);
+			if(lat == null || log == null){
+				return Response.ok("").build();
+			}
+			Double teste_latitude = Double.valueOf(lat); 
+			Double teste_longitude = Double.valueOf(log); 
 			
-			JSONObject dados_array = dados_array_json.getJSONObject("usuario");
-			String nome = dados_array.getString("nome");
-			String email = dados_array.getString("email");
-			String senha = dados_array.getString("senha");
-			
-			UsuarioService userService = new  UsuarioServiceImpl();
-			if(!userService.validarEmail(email)){
-				return Response.serverError().entity("E-mail já existe!").build();
+			if(teste_latitude == null || teste_longitude == null ){
+				return Response.ok("").build();
 			}
 			
-			if(nome == null || email == null || senha == null || nome.equalsIgnoreCase("") || email.equalsIgnoreCase("") || senha.equalsIgnoreCase("")){
-				return Response.serverError().entity("Campo preenchido inadequadamente !").build();
-			}
-			Usuario user = new Usuario(nome,senha,email);
-			//user.setIdUsuario(0);
-			user = (Usuario) service.gravar(user);
+			String jsonString = null;
+			URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + log + "&sensor=true");
+			HttpURLConnection conexao = (HttpURLConnection) url.openConnection();		
+			conexao.connect();
+		        int status = conexao.getResponseCode();
+
+		        switch (status) {
+		        	case 200:
+		            case 201:{
+		                BufferedReader br = new BufferedReader(new InputStreamReader(conexao.getInputStream(),"UTF-8"));
+		                StringBuilder sb = new StringBuilder();
+		                String line;
+		                while ((line = br.readLine()) != null) {
+		                    sb.append(line);
+		                }
+		                br.close();
+		                jsonString = sb.toString();
+		            }break;
+		            default : {
+		            	System.out.println("Localização não encontrada...");
+		            }break;
+		        }
+		    if(jsonString == null) {
+		    	return Response.ok("").build();
+		    }
+		    
+		    String nomeBairro = null;
+			String nomeCidade = null;
+			String nomeEstado = null;
+			String nomePais = null;
+			String cep = null;
+			String rua = null;
 			
-			Gson gson = new Gson();
-			String json = gson.toJson(user);
-			return Response.ok(json, MediaType.APPLICATION_JSON).build();
+		    JSONObject json = new JSONObject(jsonString);
+		    JSONArray array = json.getJSONArray("results");
+		    JSONObject jsonteste = null;
+		    for (int cont = 0; cont < array.length(); cont++){
+		   
+		    	  JSONObject arrayAddress = array.optJSONObject(cont);
+		    	 if(arrayAddress != null){		    					    	 
+			    		 JSONArray jsonArrayAux = arrayAddress.getJSONArray("address_components");
+			    		for(int conta = 0 ; conta < jsonArrayAux.length() ; conta++ ){
+			    			JSONObject jsonAux = jsonArrayAux.getJSONObject(conta);
+			    			String long_name = null;
+				    		 if(! jsonAux.isNull("long_name")){
+				    			 long_name = jsonAux.getString("long_name");
+				    		 }
+				    		 String short_name = null;
+				    		 if(! jsonAux.isNull("short_name")){
+				    			 short_name = jsonAux.getString("short_name");
+				    		 }
+				    		 JSONArray types = null;
+				    		 if(! jsonAux.isNull("types")){
+				    			 types = jsonAux.getJSONArray("types");			    		 
+				    		 }
+				    		
+				    		 String valor1 = null;
+				    		 String valor2 = null;
+				    		 
+				    		 if(types != null && types.length() == 2 ){
+				    			 valor1 = types.getString(0);
+				    			 valor2 = types.getString(1);
+				    		 }else{
+				    			 valor1 = types.getString(0);
+				    		 }
+				    		 if(types.length() == 2 && valor1.equalsIgnoreCase("neighborhood") && valor2.equalsIgnoreCase("political")){
+				    			 nomeBairro = long_name; 
+				    		 }
+				    		 if(types.length() == 2 && valor1.equalsIgnoreCase("administrative_area_level_2") && valor2.equalsIgnoreCase("political")){
+				    			 nomeCidade = long_name; 
+				    		 }
+				    		 if(types.length() == 2 && valor1.equalsIgnoreCase("administrative_area_level_1") && valor2.equalsIgnoreCase("political")){
+				    			 nomeEstado = short_name; 
+				    		 }
+				    		 if(types.length() == 2 && valor1.equalsIgnoreCase("country") && valor2.equalsIgnoreCase("political")){
+				    			 nomePais = long_name; 
+				    		 }
+				    		 if(types.length() == 1 && valor1.equalsIgnoreCase("postal_code")){
+				    			 cep = long_name; 
+				    		 }
+				    		 if(types.length() == 1 && valor1.equalsIgnoreCase("route")){
+				    			 rua = long_name; 
+				    		 }
+			    		}
+		    	 }
+		    }
+
+		    JsonObject json_resultado = new JsonObject();
+		    json_resultado.addProperty("rua", rua);
+		    json_resultado.addProperty("cep", cep);
+		    json_resultado.addProperty("nomePais", nomePais);
+		    json_resultado.addProperty("nomeEstado", nomeEstado);
+		    json_resultado.addProperty("nomeCidade", nomeCidade);
+		    json_resultado.addProperty("nomeBairro", nomeBairro);
+			return Response.ok(json_resultado.toString()).build();	
 		}catch(Exception e){
-			e.printStackTrace();
-			 return Response.serverError().entity(e.getMessage()).build();
+			return Response.ok(" ").build();
 		}
+		
 	}
-
-	
-
 
 }
